@@ -1,0 +1,32 @@
+{
+  "name": "webhook-interactive-chat",
+  "version": "1.0.0",
+  "description": "Bot para facebook",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app/app.js",
+    "dev": "nodemon ./app/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mundoenrique/webhook-interactive-chat.git"
+  },
+  "author": "J. Enrique Peñaloza P.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mundoenrique/webhook-interactive-chat/issues"
+  },
+  "homepage": "https://github.com/mundoenrique/webhook-interactive-chat#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "config": "^1.30.0",
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
+    "redis": "^2.8.0",
+    "request": "^2.85.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
+}
