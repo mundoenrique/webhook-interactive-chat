@@ -1,0 +1,15 @@
+{
+  "appPort": "8000",
+  "msnAppId": "226319837922104",
+  "msnAppSecret": "173cd3be94ceaa54d76dd4a704f0979c",
+  "msnAccessToken": "",
+  "faceBookPage":"https://www.facebook.com/interactivechat/",
+  "faceBookAPI": "https://graph.facebook.com/v2.12/",
+  "webHookToken":"s3cr3tT0k3n",
+  "serverUrl": "",
+  "pythonAPI": "",
+  "mongoPort":"",
+  "mongoHost": "",
+  "redisPort": "",
+  "redisHost":""
+}
