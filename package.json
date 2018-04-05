@@ -2,7 +2,7 @@
   "name": "webhook-interactive-chat",
   "version": "1.0.0",
   "description": "Bot para facebook",
-  "main": "app.js",
+  "main": "./app/app.js",
   "scripts": {
     "start": "node ./app/app.js",
     "dev": "nodemon ./app/app.js",
