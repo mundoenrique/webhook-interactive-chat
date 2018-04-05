@@ -22,7 +22,7 @@
   //API ´de facebook
   FACEBOOK_API = (process.env.FACEBOOK_API) ? process.env.FACEBOOK_API : config.get('faceBookAPI'),
   //Token de validación del webhook
-  WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('s3cr3tT0k3n'),
+  WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('webHookToken'),
   //Url de la aplicación node
   SERVER_URL = (process.env.SERVER_URL) ? process.env.SERVER_URL : config.get('serverUrl');
 
@@ -34,12 +34,32 @@ if(!(MSN_APP_SECRET && MSN_ACCESS_TOKEN && MSN_ACCESS_TOKEN)) {
 var app = express();
 app.set('port', APP_PORT);
 app.set('view engine', 'ejs');
-app.use(bodyParser.json({verify: 'verifyRequestSignature'}));
+app.use(bodyParser.json());
 app.use(express.static('assets'));
 
 //Iniciar el servidor
 app.listen(app.get('port'), () => {
   console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
+});
+
+//Recibir peticiones GET
+app.get('/', (req, res) => {
+	res.send('Servidor activo')
+});
+
+/*
+ * Use your own validation token. Check that the token used in the Webhook
+ *
+ */
+app.get('/webhook', function(req, res) {
+  if (req.query['hub.mode'] === 'subscribe' &&
+      req.query['hub.verify_token'] === WEBHOOK_TOKEN) {
+    console.log("Webhook validado exitosamente");
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    console.error("No fue posible validar el webhook. Asegurate de que el token coincida");
+    res.sendStatus(403);
+  }
 });
 
 
