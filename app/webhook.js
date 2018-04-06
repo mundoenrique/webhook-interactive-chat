@@ -24,6 +24,8 @@ var webhookMessaging = (req, res) => {
 
   //Validar que se un petición desde la página
   if (body.object == 'page') {
+    console.log(body.entry[0]);
+    console.log(body.entry[0].messaging);
     // Recorrer cada entrada
     body.entry.forEach((bodyEntry) => {
       let pageID = bodyEntry.id;
