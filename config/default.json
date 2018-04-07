@@ -6,10 +6,11 @@
   "faceBookPage":"https://www.facebook.com/Bot-DEV-Provis-PE-1390187477746537/",
   "faceBookAPI": "https://graph.facebook.com/v2.12/",
   "webHookToken":"s3cr3tT0k3n",
-  "serverUrl": "https://41d1aad9.ngrok.io/",
+  "serverUrl": "https://560f46ca.ngrok.io/",
   "pythonAPI": "1",
-  "mongoPort":"1",
-  "mongoHost": "1",
-  "redisPort": "1",
-  "redisHost":"1"
+  "mongoPort":"27017",
+  "mongoHost": "127.0.0.1",
+  "mongoCollection": "webhook",
+  "redisPort": "6379",
+  "redisHost":"127.0.0.1"
 }
