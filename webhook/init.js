@@ -5,6 +5,7 @@ const
   mongoose = require('mongoose'),
   redis = require('redis'),
   app = require('./app'),
+  botConfig = require('./modules/botConfig'),
   //Puerto de la aplicación nodeJS
   APP_PORT = (process.env.APP_PORT) ? process.env.APP_PORT : config.get('appPort'),
   //Puerto para mongo
@@ -32,6 +33,7 @@ const
       //Iniciar del servidor
       app.listen(app.get('port'), () => {
         console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
+        botConfig.setInitiatlActiva();
       });
     }).catch(error => console.log(error));
   });
