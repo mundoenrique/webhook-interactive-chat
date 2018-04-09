@@ -8,6 +8,29 @@ const
   //API ´de facebook
   FACEBOOK_API = (process.env.FACEBOOK_API) ? process.env.FACEBOOK_API : config.get('faceBookAPI');
 
+//Configura inicio del bot
+var setGreetingMenu = (header, body) => {
+  console.log('<<<<====Activar botón \"Empezar\", saludo y menú persistente====>>>>');
+  request({
+    method: 'POST',
+    headers: header,
+    url: FACEBOOK_API + 'me/messenger_profile',
+    qs: {access_token: MSN_ACCESS_TOKEN},
+    json: body
+  }, (error, response, body) => {
+    let fail = '';
+
+    if(error !== null || response.statusCode !== 200) {
+      fail = error != null ? error : fail;
+    }
+
+    console.log('statusCode:', response.statusCode);
+    console.log(body, fail);
+    console.log('------------------------------------------------------------------');
+
+  });
+}
+
 //Solicita datos públicos del usuario a facebook
 var getFacebookDataUser = (senderId, _setDatauser_) => {
   console.log('<<<<====REQUEST datos públicos del usuario====>>>>');
@@ -33,29 +56,6 @@ var getFacebookDataUser = (senderId, _setDatauser_) => {
     _setDatauser_(data)
   });
 
-}
-
-//Configura inicio del bot
-var setGreetingMenu = (header, body) => {
-  console.log('<<<<====Activar botón \"Empezar\", saludo y menú persistente====>>>>');
-  request({
-    method: 'POST',
-    headers: header,
-    url: FACEBOOK_API + 'me/messenger_profile',
-    qs: {access_token: MSN_ACCESS_TOKEN},
-    json: body
-  }, (error, response, body) => {
-    let fail = '';
-
-    if(error !== null || response.statusCode !== 200) {
-      fail = error != null ? error : fail;
-    }
-
-    console.log('statusCode:', response.statusCode);
-    console.log(body, fail);
-    console.log('------------------------------------------------------------------');
-
-  });
 }
 
 module.exports = ({
