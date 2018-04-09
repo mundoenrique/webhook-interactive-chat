@@ -32,7 +32,32 @@ var setGreetingMenu = (header, body) => {
 }
 
 //Solicita datos públicos del usuario a facebook
-var getFacebookDataUser = (senderId, _setDatauser_) => {
+var getFacebookDataUser = (senderId) => {
+  return new Promise((resolve, reject) => {
+    console.log('<<<<====REQUEST datos públicos del usuario====>>>>');
+    console.log('senderID:', senderId);
+    console.log('--------------------------------------------------');
+    request({
+      method: 'GET',
+      url: FACEBOOK_API + senderId,
+      qs: {access_token: MSN_ACCESS_TOKEN}
+    }, (error, response, body) => {
+      let fail = error != null ? error : '';
+      console.log('<<<<====RESPONSE datos públicos del usuario====>>>>');
+      console.log('statusCode:', response.statusCode);
+      console.log(body, fail);
+      console.log('---------------------------------------------------');
+      return response.statusCode !== 200 ? reject() : resolve(body);
+    });
+  });
+}
+module.exports = ({
+  getFacebookDataUser,
+  setGreetingMenu
+})
+
+/*
+var P_getFacebookDataUser = (senderId, _setDatauser_) => {
   console.log('<<<<====REQUEST datos públicos del usuario====>>>>');
   console.log('senderID:', senderId);
   console.log('--------------------------------------------------');
@@ -57,8 +82,4 @@ var getFacebookDataUser = (senderId, _setDatauser_) => {
   });
 
 }
-
-module.exports = ({
-  getFacebookDataUser,
-  setGreetingMenu
-})
+*/

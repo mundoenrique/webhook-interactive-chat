@@ -1,5 +1,4 @@
 'use strict'
-//Token de validación del webhook
 const
   config = require('config'),
   moment = require('moment'),
@@ -29,36 +28,37 @@ var webhookMessaging = (req, res) => {
     let pageID = body.entry[0].id;
     let timeOfEvent = new Date(body.entry[0].time);
     let senderId = body.entry[0].messaging[0].sender.id;
-    let messagingEvent = body.entry[0].messaging[0];
+    let messageEvent = body.entry[0].messaging[0];
     let webhookEvent;
-    API.getFacebookDataUser(senderId, function(userData){
 
-      if (messagingEvent.message) {
-        webhookEvent = '\"message\"';
+    if (messageEvent.message) {
+      webhookEvent = '\"message\"';
+      EVENTS.messagePostbacks(senderId, messageEvent);
+    } else if (messageEvent.postback) {
+      webhookEvent = '\"postback\"';
+      EVENTS.messagePostbacks(senderId, messageEvent);
+    } else if (messageEvent.delivery) {
+      webhookEvent = '\"delivery\"';
 
-      } else if (messagingEvent.postback) {
-        webhookEvent = '\"postback\"';
+    } else if (messageEvent.optin) {
+      webhookEvent = '\"optin\"';
 
-      } else if (messagingEvent.delivery) {
-        webhookEvent = '\"delivery\"';
+    } else if (messageEvent.read) {
+      webhookEvent = '\"read\"';
 
-      } else if (messagingEvent.optin) {
-        webhookEvent = '\"optin\"';
+    } else if (messageEvent.account_linking) {
+      webhookEvent = '\"account_linking\"';
 
-      } else if (messagingEvent.read) {
-        webhookEvent = '\"read\"';
+    } else {
+      webhookEvent = '\"desconicido\"';
 
-      } else if (messagingEvent.account_linking) {
-        webhookEvent = '\"account_linking\"';
+    }
+    console.log('<<<<====%s Evento webhook %s recibido====>>>>', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"), webhookEvent);
+    console.log(messageEvent);
+    console.log('---------------------------------------------------------------------');
 
-      } else {
-        webhookEvent = '\"desconicido\"';
+    //API.getFacebookDataUser(senderId).then(dataUser => {}).catch(error => {})
 
-      }
-      console.log('<<<<====%s Evento webhook %s recibido====>>>>', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"), webhookEvent);
-      console.log(messagingEvent);
-      console.log('---------------------------------------------------------------------');
-    });
     //Devolver '200 (process ok)' a todos los eventos.
     res.sendStatus(200);
   } else {
