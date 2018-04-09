@@ -25,6 +25,7 @@ const
 
   //Coenctar redis
   redisClient.on('connect', () => {
+    console.log('<<<<<<<=======Inicio de la aplicación nodeJs=======>>>>>>>');
     console.log('Redis se está ejecutando satisfactoriamente');
     //Conectar mongo
     mongoose.Promise = global.Promise;
@@ -33,7 +34,8 @@ const
       //Iniciar del servidor
       app.listen(app.get('port'), () => {
         console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
-        botConfig.setInitiatlActiva();
+        console.log('----------------------------------------------------------');
+        //botConfig.setInitiatlActiva();
       });
     }).catch(error => console.log(error));
   });
