@@ -30,34 +30,51 @@ var webhookMessaging = (req, res) => {
     let senderId = body.entry[0].messaging[0].sender.id;
     let messageEvent = body.entry[0].messaging[0];
     let webhookEvent;
+    let bodyRes = {
+      messaging_type: "RESPONSE",
+      recipient: {
+          id: senderId
+      },
+      sender_action: "typing_on"
+    };
 
-    if (messageEvent.message) {
-      webhookEvent = '\"message\"';
-      EVENTS.messagePostbacks(senderId, messageEvent);
-    } else if (messageEvent.postback) {
-      webhookEvent = '\"postback\"';
-      EVENTS.messagePostbacks(senderId, messageEvent);
-    } else if (messageEvent.delivery) {
-      webhookEvent = '\"delivery\"';
-
-    } else if (messageEvent.optin) {
-      webhookEvent = '\"optin\"';
-
-    } else if (messageEvent.read) {
-      webhookEvent = '\"read\"';
-
-    } else if (messageEvent.account_linking) {
-      webhookEvent = '\"account_linking\"';
-
-    } else {
-      webhookEvent = '\"desconicido\"';
-
-    }
-    console.log('<<<<====%s Evento webhook %s recibido====>>>>', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"), webhookEvent);
+    console.log('<<<<====%s Evento webhook recibido====>>>>', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"));
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 
-    //API.getFacebookDataUser(senderId).then(dataUser => {}).catch(error => {})
+    API.facebookRequest('sendMessage', 'POST', '', 'me/messages', '', bodyRes)
+      .then(body => {
+        if (messageEvent.message) {
+          webhookEvent = '\"message\"';
+          EVENTS.messagePostbacks(senderId, messageEvent);
+        } else if (messageEvent.postback) {
+          webhookEvent = '\"postback\"';
+          EVENTS.messagePostbacks(senderId, messageEvent);
+        } else if (messageEvent.delivery) {
+          webhookEvent = '\"delivery\"';
+
+        } else if (messageEvent.optin) {
+          webhookEvent = '\"optin\"';
+
+        } else if (messageEvent.read) {
+          webhookEvent = '\"read\"';
+
+        } else if (messageEvent.account_linking) {
+          webhookEvent = '\"account_linking\"';
+
+        } else {
+          webhookEvent = '\"desconicido\"';
+
+        }
+
+        /*
+        API.facebookRequest('dataUser', 'GET', '', '', senderId, '')
+          .then(body => {})
+          .catch(error => console.log('Erorr====>>>>', error));
+        */
+        //API.getFacebookDataUser(senderId).then(dataUser => {}).catch(error => {})
+      })
+      .catch(error => console.log(error));
 
     //Devolver '200 (process ok)' a todos los eventos.
     res.sendStatus(200);

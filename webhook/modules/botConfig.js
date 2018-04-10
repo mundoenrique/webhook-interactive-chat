@@ -2,10 +2,15 @@
 const API = require('./connectAPIS');
 //Activa botón Empezar, saludo y menú persistente
 var setInitiatlActiva = () => {
-  let header = {
+  let
+    action = 'persistent_menu',
+    method = 'POST',
+    header = {
     "content-type": "application/json"
-  };
-  let body = {
+  },
+  uri ='me/messenger_profile',
+  senderId = '',
+  body = {
     get_started: {
       payload: "Empezar"
     },
@@ -33,8 +38,12 @@ var setInitiatlActiva = () => {
         }
       ]
     }]
-  }
-  API.setGreetingMenu(header, body);
+  };
+
+  API.facebookRequest(action, method, header, uri, senderId, body)
+    .then(body => {})
+    .catch(error => console.log('Erorr====>>>>', error));
+  //API.setGreetingMenu(header, body);
 }
 
 module.exports = ({

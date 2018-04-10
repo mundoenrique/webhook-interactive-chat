@@ -1,6 +1,7 @@
 'use strict'
 //dependencias
-
+const
+  API = require('./connectAPIS')
 //Manejo de eventos para el API de python
 var messagePostbacks = (senderId, messageEvent) => {
   let message;
@@ -20,15 +21,9 @@ var messagePostbacks = (senderId, messageEvent) => {
   } else if(messageEvent.postback) {
     message = messageEvent.postback.payload;
   }
-
-
-
- console.log('<<<<====mensaje recibido====>>>>');
- console.log(message);
- console.log('--------------------------------');
-
-
-
+  console.log('<<<<====mensaje recibido====>>>>');
+  console.log(message);
+  console.log('--------------------------------');
 
   /*
   return new Promise((resolve, reject) => {
