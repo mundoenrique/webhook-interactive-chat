@@ -25,46 +25,44 @@ var webhookMessaging = (req, res) => {
 
   //Válida que sea una petición desde la página
   if (body.object == 'page') {
-    let pageID = body.entry[0].id;
-    let timeOfEvent = new Date(body.entry[0].time);
-    let senderId = body.entry[0].messaging[0].sender.id;
-    let messageEvent = body.entry[0].messaging[0];
-    let webhookEvent;
-    let bodyRes = {
+    let
+      pageID = body.entry[0].id,
+      timeOfEvent = new Date(body.entry[0].time),
+      senderId = body.entry[0].messaging[0].sender.id,
+      messageEvent = body.entry[0].messaging[0],
+      action = 'markSeen',
+      method = 'POST',
+      header = '',
+      uri = 'me/messages',
+      sender_Id = '',
+      bodyRes = {
       messaging_type: "RESPONSE",
       recipient: {
           id: senderId
       },
-      sender_action: "typing_on"
+      sender_action: "mark_seen"
     };
 
-    console.log('<<<<====%s Evento webhook recibido====>>>>', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"));
+    console.log('--------%s Evento webhook recibido--------', moment().format("YYYY-MM-DD HH:mm:ss"));
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 
-    API.facebookRequest('sendMessage', 'POST', '', 'me/messages', '', bodyRes)
+    API.facebookRequest(action, method, header, uri, sender_Id, bodyRes)
       .then(body => {
-        if (messageEvent.message) {
-          webhookEvent = '\"message\"';
+        if (messageEvent.message || messageEvent.postback) {
           EVENTS.messagePostbacks(senderId, messageEvent);
-        } else if (messageEvent.postback) {
-          webhookEvent = '\"postback\"';
-          EVENTS.messagePostbacks(senderId, messageEvent);
+
         } else if (messageEvent.delivery) {
-          webhookEvent = '\"delivery\"';
 
         } else if (messageEvent.optin) {
-          webhookEvent = '\"optin\"';
+
 
         } else if (messageEvent.read) {
-          webhookEvent = '\"read\"';
 
         } else if (messageEvent.account_linking) {
-          webhookEvent = '\"account_linking\"';
 
         } else {
-          webhookEvent = '\"desconicido\"';
-
+          console.log('No fue posible identificar el evnto webhook recibido')
         }
 
         /*

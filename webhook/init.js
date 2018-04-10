@@ -21,22 +21,35 @@ const
   //Instancia para conectar redis
   redisClient = redis.createClient(REDIS_PORT, REDIS_HOST);
 
-  app.set('port', APP_PORT);
+app.set('port', APP_PORT);
 
-  //Coenctar redis
-  redisClient.on('connect', () => {
-    console.log('<<<<<<<=======Inicio de la aplicación nodeJs=======>>>>>>>');
-    console.log('Redis se está ejecutando satisfactoriamente');
-    //Conectar mongo
-    mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_COLLECTION).then(() => {
-      console.log('Conexión a la colección de mongo \"%s\" exitosa', MONGO_COLLECTION);
+//Coenctar redis
+redisClient.on('connect', () => {
+  console.log('--------Inicio Redis y Mongo--------');
+  console.log('Redis se está ejecutando satisfactoriamente');
+  //Conectar mongo
+  mongoose.Promise = global.Promise;
+  mongoose.connect('mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_COLLECTION)
+    .then(() => {
+      console.log('Conexión a la colección de Mongo \"%s\" exitosa', MONGO_COLLECTION);
+      console.log('----------------------------------------------------------');
+      return new Promise((resolve, reject) => {
+        let menuChanged = false;
+        if(menuChanged) {
+          botConfig.setInitiatlActiva(function(error, result) {
+            return error ? reject(error) : resolve(result);
+          });
+        } else {
+          resolve(true);
+        }
+      });
+
+    })
+    .then(result => {
       //Iniciar del servidor
       app.listen(app.get('port'), () => {
         console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
-        console.log('----------------------------------------------------------');
-        //botConfig.setInitiatlActiva();
       });
-    }).catch(error => console.log(error));
-  });
-
+    })
+    .catch(error => console.log(error));
+});

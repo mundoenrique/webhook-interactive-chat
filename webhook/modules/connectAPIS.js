@@ -18,13 +18,15 @@ var facebookRequest = (action, method, header, uri, senderId, body) => {
     case 'dataUser':
       msg = 'datos públicos del usuario';
       break;
-    case 'sendMessage':
-      msg = 'Envío de respuesta al usuario';
+    case 'markSeen':
+      msg = 'mensaje al usuario';
       break;
 
   }
   return new Promise((resolve, reject) => {
-    console.log('<<<<====REQUEST ' + msg + '====>>>>');
+    console.log('--------REQUEST ' + msg + '--------');
+    console.log(action);
+    console.log(body);
     senderId !== '' ? console.log('senderID:', senderId) : '';
     console.log('--------------------------------------------------');
     request({
@@ -35,7 +37,7 @@ var facebookRequest = (action, method, header, uri, senderId, body) => {
       json: body,
     }, (error, response, body) => {
       let fail = error != null ? error : '';
-      console.log('<<<<====RESPONSE ' + msg + '====>>>>');
+      console.log('--------RESPONSE ' + msg + '--------');
       console.log('statusCode:', response.statusCode);
       console.log(body, fail);
       console.log('---------------------------------------------------');
@@ -87,36 +89,9 @@ var getFacebookDataUser = (senderId) => {
     });
   });
 }
+
 module.exports = ({
   facebookRequest,
   getFacebookDataUser,
   setGreetingMenu
-})
-
-/*
-var P_getFacebookDataUser = (senderId, _setDatauser_) => {
-  console.log('<<<<====REQUEST datos públicos del usuario====>>>>');
-  console.log('senderID:', senderId);
-  console.log('--------------------------------------------------');
-  request({
-    method: 'GET',
-    url: FACEBOOK_API + senderId,
-    qs: {
-      access_token: MSN_ACCESS_TOKEN
-    },
-  }, (error, response, data) => {
-    console.log('<<<<====RESPONSE datos públicos del usuario====>>>>');
-    let fail = '';
-
-    if(error !== null || response.statusCode !== 200) {
-      fail = error != null ? error : fail;
-    }
-
-    console.log('statusCode:', response.statusCode);
-    console.log(data, fail);
-    console.log('---------------------------------------------------');
-    _setDatauser_(data)
-  });
-
-}
-*/
+});
