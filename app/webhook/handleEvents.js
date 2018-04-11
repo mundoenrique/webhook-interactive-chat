@@ -1,7 +1,9 @@
 'use strict'
-//dependencias
 const
-  API = require('./connectAPIS')
+  //dependencias
+  API = require('./connectAPIS'),
+  TYC = require('./modules/tyc')
+;
 //Manejo de eventos para el API de python
 var messagePostbacks = (senderId, messageEvent) => {
   let message;
@@ -18,32 +20,38 @@ var messagePostbacks = (senderId, messageEvent) => {
   } else if(messageEvent.postback) {
     message = messageEvent.postback.payload;
   }
-   switch (message) {
-     case 'leer':
-     case 'downloadConditions':
-     case 'preguntas':
-     case 'acepto':
-     case 'viewMore':
-     default:
-      console.log(message);
-      let
-        action = 'dataUser',
-        method = 'GET',
-        uri = '',
-        body = {recipient: {id: senderId}}
-      ;
-      API.facebookRequest(action, method, uri, body)
-        .then(dataUser => {
-          return API.pythonRequest(senderId, dataUser, message);
-        })
-        .then(responsePython => {
+  switch (message) {
+    case 'leer':
+      TYC.sendFile(senderId);
+      break;
+    case 'downloadConditions':
+    case 'preguntas':
+    case 'acepto':
+    case 'viewMore':
+    default:
+    let
+      action = 'dataUser',
+      method = 'GET',
+      uri = '',
+      body = {recipient: {id: senderId}}
+    ;
+    API.facebookRequest(action, method, uri, body)
+      .then(dataUser => {
+        return API.pythonRequest(senderId, dataUser, message);
+      })
+      .then(responsePython => {
+        handleResponsePython(senderId, responsePython);
+      })
+      .catch()
+    ;
+  }
+}
 
-        })
-        .catch(error => console.log(error));
-
-   }
-
-
+//Maneja la respuesta del API de python
+var handleResponsePython = (senderId, responsePython) => {
+  if(responsePython.sender.tyc === 1) {
+    TYC.requestAccept(senderId, responsePython);
+  }
 }
 
 module.exports = ({
