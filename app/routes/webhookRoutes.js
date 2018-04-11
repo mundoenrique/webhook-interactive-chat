@@ -1,7 +1,7 @@
 'use strict'
 const
   express = require('express'),
-  webhook = require('../modules/webhook');
+  webhook = require('../webhook/webhook');
 
 var route = express.Router();
 

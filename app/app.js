@@ -4,26 +4,20 @@
  * All rights reserved.
  */
 
- const
+const
   bodyParser = require('body-parser'),
   config = require('config'),
   crypto = require('crypto'),
   express = require('express'),
   request = require('request'),
   webhookRoutes = require('./routes/webhookRoutes'),
-  //Identificaodr de la aplicación messenger
-  MSN_APP_ID = (process.env.MSN_APP_ID) ? process.env.MSN_APP_ID : config.get('msnAppId'),
   //Clave secreta de la aplicación MESSENGER
-  MSN_APP_SECRET = (process.env.MSN_APP_SECRET) ? process.env.MSN_APP_SECRET : config.get('msnAppSecret'),
-  //Pagina de faebook asociada al bot
-  FACEBOOK_PAGE = (process.env.FACEBOOK_PAGE) ? process.env.FACEBOOK_PAGE : config.get('faceBookPage'),
-  //Url de la aplicación node
-  SERVER_URL = (process.env.SERVER_URL) ? process.env.SERVER_URL : config.get('serverUrl');
+  MSN_APP_SECRET = (process.env.MSN_APP_SECRET) ? process.env.MSN_APP_SECRET : config.get('msnAppSecret')
+;
 
 //Instancia express
 var app = express();
-
-
+//configura la aplicación
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json({verify: verifyRequestSignature}));
@@ -33,7 +27,7 @@ app.use(express.static('assets'));
 app.get('/', (req, res) => {
 	res.send('Servidor activo')
 });
-
+//Recibe peticiones http
 app.use('/webhook', webhookRoutes);
 
 //Verifica que la solicitud proviene de facebook a través de la clave secreta de la aplicación

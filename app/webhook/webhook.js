@@ -5,7 +5,8 @@ const
   API = require('./connectAPIS'),
   EVENTS = require('./handleEvents'),
   //Token de validación del webhook
-  WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('webHookToken');
+  WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('webHookToken')
+;
 /*
  * Generar un TOKen para validar la petición inicial del webhook
  */
@@ -26,11 +27,11 @@ var webhookMessaging = (req, res) => {
   //Válida que sea una petición desde la página
   if (bodyReq.object == 'page') {
     let
-      pageID = bodyReq.entry[0].id,
+      pageId = bodyReq.entry[0].id,
       timeOfEvent = new Date(bodyReq.entry[0].time),
-      senderId = bodyReq.entry[0].messaging[0].sender.id,
       messageEvent = bodyReq.entry[0].messaging[0],
-      action = 'markSeen',
+      senderId = bodyReq.entry[0].messaging[0].sender.id,
+      action = 'typingOn',
       method = 'POST',
       uri = 'me/messages',
       body = {
@@ -38,10 +39,10 @@ var webhookMessaging = (req, res) => {
         recipient: {
             id: senderId
         },
-        sender_action: "mark_seen"
+        sender_action: "typing_on"
       };
 
-    console.log('-----%s Evento webhook recibido: senderId %s-----', moment().format("YYYY-MM-DD HH:mm:ss"), senderId);
+    console.log('-----%s Evento webhook recibido: senderId %s-----', moment(timeOfEvent).format("YYYY-MM-DD HH:mm:ss"), senderId);
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 

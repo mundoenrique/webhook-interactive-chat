@@ -2,10 +2,10 @@
   "name": "webhook-interactive-chat",
   "version": "1.0.0",
   "description": "Bot para facebook",
-  "main": "webhook/init.js",
+  "main": "app/index.js",
   "scripts": {
-    "start": "node webhook/init.js",
-    "dev": "nodemon webhook/init.js",
+    "start": "node app/index.js",
+    "dev": "nodemon app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

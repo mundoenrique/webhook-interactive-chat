@@ -4,9 +4,12 @@ const
   config = require('config'),
   request = require('request'),
   //Token generado por el portal de facebook developers
-  MSN_ACCESS_TOKEN = (process.env.MSN_ACCESS_TOKEN) ? process.env.MSN_ACCESS_TOKEN : config.get('msnAccessToken'),
+  MSN_ACCESS_TOKEN = process.env.MSN_ACCESS_TOKEN ? process.env.MSN_ACCESS_TOKEN : config.get('msnAccessToken'),
   //API ´de facebook
-  FACEBOOK_API = (process.env.FACEBOOK_API) ? process.env.FACEBOOK_API : config.get('faceBookAPI');
+  FACEBOOK_API = process.env.FACEBOOK_API ? process.env.FACEBOOK_API : config.get('faceBookAPI'),
+  //API de Python
+  PYTHON_API = process.env.PYTHON_API ? process.env.PYTHON_API : config.get('pythonAPI')
+;
 
 //Request al API e facebook
 var facebookRequest = (action, method, uri, body) => {
@@ -25,12 +28,14 @@ var facebookRequest = (action, method, uri, body) => {
       userId = senderId;
       break;
     case 'markSeen':
-      msg = 'mensaje al usuario: senderId ';
+    case 'typingOn':
+    case 'typingOff':
+    msg = 'mensaje al usuario: senderId ';
       break;
 
   }
   return new Promise((resolve, reject) => {
-    console.log('--------REQUEST ' + msg + senderId + '--------');
+    console.log('--------REQUEST facebook %s %s--------', msg, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
     request({
@@ -40,12 +45,43 @@ var facebookRequest = (action, method, uri, body) => {
       qs: {access_token: MSN_ACCESS_TOKEN},
       json: body,
     }, (error, response, body) => {
-      let fail = error != null ? error : '';
-      console.log('--------RESPONSE ' + msg + senderId +  '--------');
+      let fail = error ? error : '';
+      console.log('--------RESPONSE facebook %s %s--------', msg, senderId);
       console.log('statusCode:', response.statusCode);
       console.log(body, fail);
       console.log('---------------------------------------------------');
-      return response.statusCode !== 200 ? reject(action) : resolve(body);
+      response.statusCode !== 200 ? reject(action) : resolve(body);
+    });
+  });
+}
+
+//request API Python
+var pythonRequest = (senderId, dataUser, message) => {
+  let
+    body = {
+      sender: {
+        "external-id": senderId,
+				"first-name": dataUser.first_name,
+				"last-name": dataUser.last_name,
+				"facebook-data": dataUser
+      },
+      text: message
+    }
+  ;
+  return new Promise((resolve, reject) => {
+    console.log('----REQUEST python senderId %s----', senderId);
+    console.log(body);
+    console.log('--------------------------------------------------');
+    request({
+      method: 'POST',
+      url: PYTHON_API,
+      json: body,
+    }, (error, response, body) => {
+      let fail = error ? error : '';
+      console.log('----RESPONSE python senderId %s----', senderId);
+      console.log(body, fail);
+      console.log('---------------------------------------------------');
+      error ? reject('falló la comunicación con: %s', PYTHON_API) : resolve(body);
     });
   });
 }
@@ -96,6 +132,5 @@ var getFacebookDataUser = (senderId) => {
 
 module.exports = ({
   facebookRequest,
-  getFacebookDataUser,
-  setGreetingMenu
+  pythonRequest
 });

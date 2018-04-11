@@ -5,7 +5,7 @@ const
   mongoose = require('mongoose'),
   redis = require('redis'),
   app = require('./app'),
-  botConfig = require('./modules/botConfig'),
+  botConfig = require('./webhook/botConfig'),
   //Puerto de la aplicación nodeJS
   APP_PORT = (process.env.APP_PORT) ? process.env.APP_PORT : config.get('appPort'),
   //Puerto para mongo
@@ -34,7 +34,7 @@ redisClient.on('connect', () => {
       console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
       console.log('----------------------------------------------------------');
       return new Promise((resolve, reject) => {
-        let menuChanged = false;
+        let menuChanged = true;
         if(menuChanged) {
           botConfig.setInitiatlActiva(function(error, result) {
             return error ? reject(error) : resolve(result);

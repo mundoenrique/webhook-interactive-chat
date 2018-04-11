@@ -31,7 +31,7 @@ var setInitiatlActiva = (_result_) => {
           {
             type: "postback",
             title: "Otras Consultas",
-            payload: "Preguntas"
+            payload: "preguntas"
           }
         ]
       }]
