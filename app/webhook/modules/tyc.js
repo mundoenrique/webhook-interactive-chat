@@ -61,7 +61,7 @@ var requestAccept = (senderId, resposeApi) => {
               elements: [{
                 title: 'MIA',
                 subtitle: 'Para poder interactuar conmigo por favor acepta los Términos y Condiciones',
-                imge_url: SERVER_URL + '/img/mia_tyc.png',
+                image_url: SERVER_URL + '/img/mia_tyc.png',
                 buttons:
                 [
                   {
