@@ -34,7 +34,7 @@ redisClient.on('connect', () => {
       console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
       console.log('----------------------------------------------------------');
       return new Promise((resolve, reject) => {
-        let menuChanged = true;
+        let menuChanged = false;
         if(menuChanged) {
           botConfig.setInitiatlActiva(function(error, result) {
             return error ? reject(error) : resolve(result);
