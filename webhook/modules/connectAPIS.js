@@ -9,35 +9,39 @@ const
   FACEBOOK_API = (process.env.FACEBOOK_API) ? process.env.FACEBOOK_API : config.get('faceBookAPI');
 
 //Request al API e facebook
-var facebookRequest = (action, method, header, uri, senderId, body) => {
-  let msg;
+var facebookRequest = (action, method, uri, body) => {
+  let
+    msg,
+    senderId = body.recipient ? body.recipient.id : '',
+    userId = ''
+  ;
+
   switch (action) {
     case 'persistent_menu':
       msg = 'Activar botón \"Empezar\", saludo y menú persistente';
       break;
     case 'dataUser':
-      msg = 'datos públicos del usuario';
+      msg = 'datos públicos del usuario: senderId ';
+      userId = senderId;
       break;
     case 'markSeen':
-      msg = 'mensaje al usuario';
+      msg = 'mensaje al usuario: senderId ';
       break;
 
   }
   return new Promise((resolve, reject) => {
-    console.log('--------REQUEST ' + msg + '--------');
-    console.log(action);
+    console.log('--------REQUEST ' + msg + senderId + '--------');
     console.log(body);
-    senderId !== '' ? console.log('senderID:', senderId) : '';
     console.log('--------------------------------------------------');
     request({
       method: method,
-      headers: header,
-      url: FACEBOOK_API + uri + senderId,
+      headers: {"content-type": "application/json"},
+      url: FACEBOOK_API + uri + userId,
       qs: {access_token: MSN_ACCESS_TOKEN},
       json: body,
     }, (error, response, body) => {
       let fail = error != null ? error : '';
-      console.log('--------RESPONSE ' + msg + '--------');
+      console.log('--------RESPONSE ' + msg + senderId +  '--------');
       console.log('statusCode:', response.statusCode);
       console.log(body, fail);
       console.log('---------------------------------------------------');

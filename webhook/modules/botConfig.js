@@ -6,11 +6,7 @@ var setInitiatlActiva = (_result_) => {
   let
     action = 'persistent_menu',
     method = 'POST',
-    header = {
-      "content-type": "application/json"
-    },
     uri ='me/messenger_profile',
-    senderId = '',
     body = {
       get_started: {
         payload: "Empezar"
@@ -41,7 +37,7 @@ var setInitiatlActiva = (_result_) => {
       }]
     };
 
-  API.facebookRequest(action, method, header, uri, senderId, body)
+  API.facebookRequest(action, method, uri, body)
     .then(() => {
       let error = null, result = true;
       _result_(error, result)

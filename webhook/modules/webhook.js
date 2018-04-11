@@ -21,34 +21,32 @@ var verifyWebhook = (req, res) => {
 }
 
 var webhookMessaging = (req, res) => {
-  let body = req.body;
+  let bodyReq = req.body;
 
   //Válida que sea una petición desde la página
-  if (body.object == 'page') {
+  if (bodyReq.object == 'page') {
     let
-      pageID = body.entry[0].id,
-      timeOfEvent = new Date(body.entry[0].time),
-      senderId = body.entry[0].messaging[0].sender.id,
-      messageEvent = body.entry[0].messaging[0],
+      pageID = bodyReq.entry[0].id,
+      timeOfEvent = new Date(bodyReq.entry[0].time),
+      senderId = bodyReq.entry[0].messaging[0].sender.id,
+      messageEvent = bodyReq.entry[0].messaging[0],
       action = 'markSeen',
       method = 'POST',
-      header = '',
       uri = 'me/messages',
-      sender_Id = '',
-      bodyRes = {
-      messaging_type: "RESPONSE",
-      recipient: {
-          id: senderId
-      },
-      sender_action: "mark_seen"
-    };
+      body = {
+        messaging_type: "RESPONSE",
+        recipient: {
+            id: senderId
+        },
+        sender_action: "mark_seen"
+      };
 
-    console.log('--------%s Evento webhook recibido--------', moment().format("YYYY-MM-DD HH:mm:ss"));
+    console.log('-----%s Evento webhook recibido: senderId %s-----', moment().format("YYYY-MM-DD HH:mm:ss"), senderId);
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 
-    API.facebookRequest(action, method, header, uri, sender_Id, bodyRes)
-      .then(body => {
+    API.facebookRequest(action, method, uri, body)
+      .then(() => {
         if (messageEvent.message || messageEvent.postback) {
           EVENTS.messagePostbacks(senderId, messageEvent);
 
@@ -64,13 +62,11 @@ var webhookMessaging = (req, res) => {
         } else {
           console.log('No fue posible identificar el evnto webhook recibido')
         }
-
         /*
-        API.facebookRequest('dataUser', 'GET', '', '', senderId, '')
+        API.facebookRequest('dataUser', 'GET', '', body)
           .then(body => {})
           .catch(error => console.log('Erorr====>>>>', error));
         */
-        //API.getFacebookDataUser(senderId).then(dataUser => {}).catch(error => {})
       })
       .catch(error => console.log(error));
 
