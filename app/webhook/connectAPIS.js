@@ -30,8 +30,8 @@ var facebookRequest = (action, method, uri, body) => {
     case 'markSeen':
     case 'typingOn':
     case 'typingOff':
-    msg = 'mensaje al usuario: senderId ';
-      break;
+    default:
+      msg = 'mensaje al usuario: senderId ';
 
   }
   return new Promise((resolve, reject) => {
@@ -50,7 +50,7 @@ var facebookRequest = (action, method, uri, body) => {
       console.log('statusCode:', response.statusCode);
       console.log(body, fail);
       console.log('---------------------------------------------------');
-      response.statusCode !== 200 ? reject(action) : resolve(body);
+      response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
     });
   });
 }
