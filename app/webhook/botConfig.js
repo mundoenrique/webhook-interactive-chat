@@ -1,54 +1,48 @@
 'use strict'
-const API = require('./connectAPIS');
+const
+  API = require('./connectAPIS'),
+  SETTINGS = require('../models/settingsModels')
+;
 
-//Activa botón Empezar, saludo y menú persistente
-var setInitiatlActiva = (_result_) => {
-  let
-    action = 'persistent_menu',
-    method = 'POST',
-    uri ='me/messenger_profile',
+var
+  action = 'persistent_menu',
+  method = 'POST',
+  uri ='me/messenger_profile'
+;
+
+//inicia la pantalla de bienvenida
+var setWelcomeScreen = (settings) => {
+  return new Promise((resolve, reject) => {
+    let actions = [], body;
+
+    settings.persistentMenu.forEach(menu => {
+      actions.push(menu);
+    });
+
     body = {
       get_started: {
-        payload: "Empezar"
+        payload: settings.greetingButton
       },
       greeting: [{
         locale: "default",
-        text: "Hola {{user_first_name}}! soy Mia, te ayudaré a realizar consultas de tus productos TEBCA. Presiona \"Empezar\" para que realices tus consultas"
+        text: settings.greeting
       }],
       persistent_menu: [{
         locale: "default",
-        call_to_actions: [
-          {
-            type: "postback",
-            title: "Saldos",
-            payload: "Saldos"
-          },
-          {
-            type: "postback",
-            title: "Movimientos",
-            payload: "Movimientos"
-          },
-          {
-            type: "postback",
-            title: "Otras Consultas",
-            payload: "preguntas"
-          }
-        ]
+        call_to_actions: actions
       }]
-    };
+    }
 
-  API.facebookRequest(action, method, uri, body)
-    .then(() => {
-      let error = null, result = true;
-      _result_(error, result)
+    API.facebookRequest(action, method, uri, body)
+    .then(() =>  {
+      return SETTINGS.putUpdatedMenu(settings._id)
     })
-    .catch(error => {
-      console.log('Erorr====>>>>', error);
-      let result = false;
-      _result_(error, result);
-    });
+    .then(() => resolve())
+    .catch(error => {return reject(error)});
+
+  });
 }
 
 module.exports = ({
-  setInitiatlActiva
+  setWelcomeScreen
 });

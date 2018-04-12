@@ -14,12 +14,15 @@ const
   MONGO_HOST = process.env.MONGO_HOST ? process.env.MONGO_HOST : config.get('mongoHost'),
   //Esquema para Mongo
   MONGO_COLLECTION = process.env.MONGO_COLLECTION ? process.env.MONGO_COLLECTION : config.get('mongoCollection'),
+  //Ajustes de inicio del bot
+  SETTINGS = require('./models/settingsModels'),
   //Puerto para redis
   REDIS_PORT = process.env.REDIS_PORT ? process.env.REDIS_PORT : config.get('redisPort'),
   //IP para redis
   REDIS_HOST =  process.env.REDIS_HOST ? process.env.REDIS_HOST : config.get('redisHost'),
   //Instancia para conectar redis
-  redisClient = redis.createClient(REDIS_PORT, REDIS_HOST);
+  redisClient = redis.createClient(REDIS_PORT, REDIS_HOST)
+;
 
 app.set('port', APP_PORT);
 
@@ -29,28 +32,20 @@ redisClient.on('connect', () => {
   console.log('Redis se está ejecutando satisfactoriamente');
   //Conectar mongo
   mongoose.Promise = global.Promise;
-  mongoose.connect('mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_COLLECTION)
-    .then(() => {
-      console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
+  mongoose.connect('mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_COLLECTION).then(() => {
+    console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
+    console.log('----------------------------------------------------------');
+    //Obtener los parámetros para la pantalla de bienvenida
+    return SETTINGS.getSettings();
+  }).then(settings => {
+    //Si "updated" es true envia la solictud de activación de  la pantalla de bienvenida
+    return settings.updated ? botConfig.setWelcomeScreen(settings) : true;
+  }).then(() => {
+    //Iniciar del servidor nodeJs
+    app.listen(app.get('port'), () => {
+      console.log('--------Puesta en marcha de la aplicación--------');
+      console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
       console.log('----------------------------------------------------------');
-      return new Promise((resolve, reject) => {
-        let menuChanged = false;
-        if(menuChanged) {
-          botConfig.setInitiatlActiva(function(error, result) {
-            return error ? reject(error) : resolve(result);
-          });
-        } else {
-          resolve(true);
-        }
-      });
-    })
-    .then(result => {
-      //Iniciar del servidor
-      app.listen(app.get('port'), () => {
-        console.log('--------Puesta en marcha de la aplicación--------');
-        console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
-        console.log('----------------------------------------------------------');
-      });
-    })
-    .catch(error => console.log(error));
+    });
+  }).catch(error => console.log(error));
 });
