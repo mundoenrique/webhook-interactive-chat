@@ -23,16 +23,12 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json({verify: verifyRequestSignature}));
 app.use(express.static('app/assets'));
 
-//Recibir peticiones GET
-app.get('/', (req, res) => {
-	res.send('Servidor activo')
-});
 //Recibe peticiones http
-app.use('/webhook', webhookRoutes);
+app.use('/', webhookRoutes);
 
 //Verifica que la solicitud proviene de facebook a través de la clave secreta de la aplicación
 function verifyRequestSignature(req, res, buf) {
-  console.log('<<<<====Verificando firma de la solicitud====>>>');
+  console.log('--------Verificando firma de la solicitud--------');
   let signature = req.headers["x-hub-signature"];
   let msg = 'La firma es VÁLIDA';
   let valid = true;

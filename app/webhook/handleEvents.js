@@ -40,9 +40,9 @@ var messagePostbacks = (senderId, messageEvent) => {
         return API.pythonRequest(senderId, dataUser, message);
       })
       .then(responsePython => {
-        handleResponsePython(senderId, responsePython);
+        return handleResponsePython(senderId, responsePython);
       })
-      .catch()
+      .catch(error => console.log(error))
     ;
   }
 }

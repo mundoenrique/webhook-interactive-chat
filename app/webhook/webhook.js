@@ -1,9 +1,10 @@
 'use strict'
 const
+  //Dependencias
   config = require('config'),
   moment = require('moment'),
-  API = require('./connectAPIS'),
-  EVENTS = require('./handleEvents'),
+  api = require('./connectAPIS'),
+  events = require('./handleEvents'),
   //Token de validación del webhook
   WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('webHookToken')
 ;
@@ -46,10 +47,10 @@ var webhookMessaging = (req, res) => {
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 
-    API.facebookRequest(action, method, uri, body)
+    api.facebookRequest(action, method, uri, body)
       .then(() => {
         if (messageEvent.message || messageEvent.postback) {
-          EVENTS.messagePostbacks(senderId, messageEvent);
+          events.messagePostbacks(senderId, messageEvent);
 
         } else if (messageEvent.delivery) {
 
@@ -63,11 +64,6 @@ var webhookMessaging = (req, res) => {
         } else {
           console.log('No fue posible identificar el evnto webhook recibido')
         }
-        /*
-        API.facebookRequest('dataUser', 'GET', '', body)
-          .then(body => {})
-          .catch(error => console.log('Erorr====>>>>', error));
-        */
       })
       .catch(error => console.log(error));
 

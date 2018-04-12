@@ -6,6 +6,7 @@ const
   redis = require('redis'),
   app = require('./app'),
   botConfig = require('./webhook/botConfig'),
+  settings = require('./models/settingsModels'),
   //Puerto de la aplicación nodeJS
   APP_PORT = (process.env.APP_PORT) ? process.env.APP_PORT : config.get('appPort'),
   //Puerto para mongo
@@ -14,20 +15,18 @@ const
   MONGO_HOST = process.env.MONGO_HOST ? process.env.MONGO_HOST : config.get('mongoHost'),
   //Esquema para Mongo
   MONGO_COLLECTION = process.env.MONGO_COLLECTION ? process.env.MONGO_COLLECTION : config.get('mongoCollection'),
-  //Ajustes de inicio del bot
-  SETTINGS = require('./models/settingsModels'),
   //Puerto para redis
   REDIS_PORT = process.env.REDIS_PORT ? process.env.REDIS_PORT : config.get('redisPort'),
   //IP para redis
   REDIS_HOST =  process.env.REDIS_HOST ? process.env.REDIS_HOST : config.get('redisHost'),
   //Instancia para conectar redis
-  redisClient = redis.createClient(REDIS_PORT, REDIS_HOST)
+  REDIS_CLIENT = redis.createClient(REDIS_PORT, REDIS_HOST);
 ;
 
 app.set('port', APP_PORT);
 
-//Coenctar redis
-redisClient.on('connect', () => {
+//ConEctar redis
+REDIS_CLIENT.on('connect', () => {
   console.log('--------Conexión Redis y Mongo--------');
   console.log('Redis se está ejecutando satisfactoriamente');
   //Conectar mongo
@@ -36,9 +35,9 @@ redisClient.on('connect', () => {
     console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
     console.log('----------------------------------------------------------');
     //Obtener los parámetros para la pantalla de bienvenida
-    return SETTINGS.getSettings();
+    return settings.getSettings();
   }).then(settings => {
-    //Si "updated" es true envia la solictud de activación de  la pantalla de bienvenida
+    //Si "updated" es "true" envia la solictud de activación de la pantalla de bienvenida
     return settings.updated ? botConfig.setWelcomeScreen(settings) : true;
   }).then(() => {
     //Iniciar del servidor nodeJs

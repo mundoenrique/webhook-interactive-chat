@@ -27,9 +27,6 @@ var facebookRequest = (action, method, uri, body) => {
       msg = 'datos públicos del usuario: senderId ';
       userId = senderId;
       break;
-    case 'markSeen':
-    case 'typingOn':
-    case 'typingOff':
     default:
       msg = 'mensaje al usuario: senderId ';
 
@@ -48,6 +45,7 @@ var facebookRequest = (action, method, uri, body) => {
       let fail = error ? error : '';
       console.log('--------RESPONSE facebook %s %s--------', msg, senderId);
       console.log('statusCode:', response.statusCode);
+      console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
       console.log('---------------------------------------------------');
       response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
@@ -79,53 +77,11 @@ var pythonRequest = (senderId, dataUser, message) => {
     }, (error, response, body) => {
       let fail = error ? error : '';
       console.log('----RESPONSE python senderId %s----', senderId);
-      console.log(body, fail);
-      console.log('---------------------------------------------------');
-      error ? reject('falló la comunicación con: %s', PYTHON_API) : resolve(body);
-    });
-  });
-}
-
-//Configura inicio del bot
-var setGreetingMenu = (header, body) => {
-  console.log('<<<<====Activar botón \"Empezar\", saludo y menú persistente====>>>>');
-  request({
-    method: 'POST',
-    headers: header,
-    url: FACEBOOK_API + 'me/messenger_profile',
-    qs: {access_token: MSN_ACCESS_TOKEN},
-    json: body
-  }, (error, response, body) => {
-    let fail = '';
-
-    if(error !== null || response.statusCode !== 200) {
-      fail = error != null ? error : fail;
-    }
-
-    console.log('statusCode:', response.statusCode);
-    console.log(body, fail);
-    console.log('------------------------------------------------------------------');
-
-  });
-}
-
-//Solicita datos públicos del usuario a facebook
-var getFacebookDataUser = (senderId) => {
-  return new Promise((resolve, reject) => {
-    console.log('<<<<====REQUEST datos públicos del usuario====>>>>');
-    console.log('senderID:', senderId);
-    console.log('--------------------------------------------------');
-    request({
-      method: 'GET',
-      url: FACEBOOK_API + senderId,
-      qs: {access_token: MSN_ACCESS_TOKEN}
-    }, (error, response, body) => {
-      let fail = error != null ? error : '';
-      console.log('<<<<====RESPONSE datos públicos del usuario====>>>>');
       console.log('statusCode:', response.statusCode);
+      console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
       console.log('---------------------------------------------------');
-      return response.statusCode !== 200 ? reject() : resolve(body);
+      response.statusCode !== 200 ? reject('falló la comunicación con: ' + PYTHON_API) : resolve(body);
     });
   });
 }

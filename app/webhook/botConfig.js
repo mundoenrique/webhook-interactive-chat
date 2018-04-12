@@ -1,7 +1,7 @@
 'use strict'
 const
-  API = require('./connectAPIS'),
-  SETTINGS = require('../models/settingsModels')
+  api = require('./connectAPIS'),
+  settings = require('../models/settingsModels')
 ;
 
 var
@@ -11,21 +11,21 @@ var
 ;
 
 //inicia la pantalla de bienvenida
-var setWelcomeScreen = (settings) => {
+var setWelcomeScreen = (setting) => {
   return new Promise((resolve, reject) => {
     let actions = [], body;
 
-    settings.persistentMenu.forEach(menu => {
+    setting.persistentMenu.forEach(menu => {
       actions.push(menu);
     });
 
     body = {
       get_started: {
-        payload: settings.greetingButton
+        payload: setting.greetingButton
       },
       greeting: [{
         locale: "default",
-        text: settings.greeting
+        text: setting.greeting
       }],
       persistent_menu: [{
         locale: "default",
@@ -33,13 +33,12 @@ var setWelcomeScreen = (settings) => {
       }]
     }
 
-    API.facebookRequest(action, method, uri, body)
+    api.facebookRequest(action, method, uri, body)
     .then(() =>  {
-      return SETTINGS.putUpdatedMenu(settings._id)
+      return settings.putUpdatedMenu(setting._id)
     })
     .then(() => resolve())
-    .catch(error => {return reject(error)});
-
+    .catch(error => {reject(error)});
   });
 }
 
