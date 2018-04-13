@@ -75,13 +75,17 @@ var pythonRequest = (senderId, dataUser, message) => {
       url: PYTHON_API,
       json: body,
     }, (error, response, body) => {
-      let fail = error ? error : '';
+      let
+        fail = error ? error : '',
+        resPython = body
+      ;
+
       console.log('----RESPONSE python senderId %s----', senderId);
       console.log('statusCode:', response.statusCode);
       console.log('statusMessage:', response.statusMessage);
-      console.log(body, fail);
+      console.log(resPython, fail);
       console.log('---------------------------------------------------');
-      response.statusCode !== 200 ? reject('falló la comunicación con: ' + PYTHON_API) : resolve(body);
+      response.statusCode !== 200 ? reject('No fue posible obtener una respuesta') : resolve(body);
     });
   });
 }
