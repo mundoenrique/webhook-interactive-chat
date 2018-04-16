@@ -48,7 +48,7 @@ var facebookRequest = (action, method, uri, body) => {
       console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
       console.log('---------------------------------------------------');
-      response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
+      error || response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
     });
   });
 }
@@ -77,15 +77,17 @@ var pythonRequest = (senderId, dataUser, message) => {
     }, (error, response, body) => {
       let
         fail = error ? error : '',
-        resPython = body
+        statusCode = error ? 500 : response.statusCode,
+        statusMessage = error ? 'Error' : response.statusMessage,
+        resPython = body ? body : ''
       ;
 
       console.log('----RESPONSE python senderId %s----', senderId);
-      console.log('statusCode:', response.statusCode);
-      console.log('statusMessage:', response.statusMessage);
+      console.log('statusCode:', statusCode);
+      console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
       console.log('---------------------------------------------------');
-      response.statusCode !== 200 ? reject('No fue posible obtener una respuesta') : resolve(body);
+      error || response.statusCode !== 200 ? reject({action: 'python', error}) : resolve(body);
     });
   });
 }

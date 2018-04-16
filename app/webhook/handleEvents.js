@@ -1,11 +1,11 @@
 'use strict'
 const
-  //dependencias
-  API = require('./connectAPIS'),
-  TYC = require('./modules/tyc')
-;
+//dependencias
+API = require('./connectAPIS'),
+TYC = require('./modules/tyc');
+var
 //Manejo de eventos para el API de python
-var messagePostbacks = (senderId, messageEvent) => {
+messagePostbacks = (senderId, messageEvent) => {
   let message;
 
   //Verifica si el evento es un MESSAGE o un POSTBACK
@@ -30,29 +30,73 @@ var messagePostbacks = (senderId, messageEvent) => {
     case 'viewMore':
     default:
     let
-      action = 'dataUser',
-      method = 'GET',
-      uri = '',
-      body = {recipient: {id: senderId}}
-    ;
+    action = 'dataUser',
+    method = 'GET',
+    uri = '',
+    body = {
+      recipient: {
+        id: senderId
+      }
+    };
     API.facebookRequest(action, method, uri, body)
-      .then(dataUser => {
-        return API.pythonRequest(senderId, dataUser, message);
-      })
-      .then(responsePython => {
-        return handleResponsePython(senderId, responsePython);
-      })
-      .catch(error => console.log(error))
-    ;
+    .then(dataUser => {
+      return API.pythonRequest(senderId, dataUser, message);
+    })
+    .then(responsePython => {
+      return handleResponsePython(senderId, responsePython);
+    })
+    .catch(error => {
+      console.log(error);
+      if(error.action) {
+        let message = 'lo siento en este momento no puedo atender tu solicitud, por favor intente en unos minutos';
+        handleResponsePython = (senderId, message);
+      }
+    });
   }
-}
-
+},
 //Maneja la respuesta del API de python
-var handleResponsePython = (senderId, responsePython) => {
-  if(responsePython.sender.tyc === 1) {
-    TYC.requestAccept(senderId, responsePython);
-  }
-}
+handleResponsePython = (senderId, responsePython) => {
+  let
+  action = 'typingOff',
+  method = 'POST',
+  uri = 'me/messages',
+  body = {
+    messaging_type: 'RESPONSE',
+    recipient: {
+      id : senderId
+    },
+    sender_action: 'typing_off'
+  };
+  API.facebookRequest(action, method, uri, body)
+  .then(() => {
+    if(responsePython.sender.tyc) {
+      TYC.requestAccept(senderId, responsePython);
+    } else {
+      sendSimpleMessage(senderId, responsePython);
+    }
+  })
+  .catch(error => console.log(error))
+},
+//Enviar mensaje simple
+sendSimpleMessage = (senderId, responseApi) => {
+  let
+  message = responseApi.text ? responseApi.text : responseApi,
+  action = 'simpleMessage',
+  method = 'POST',
+  uri = 'me/messages',
+  body = {
+    messaging_type: 'RESPONSE',
+    recipient: {
+      id : senderId
+    },
+    message: {
+      text: message
+    }
+  };
+  API.facebookRequest(action, method, uri, body)
+  .then()
+  .catch(error => console.log(error))
+};
 
 module.exports = ({
   messagePostbacks
