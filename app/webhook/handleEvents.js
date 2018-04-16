@@ -2,8 +2,10 @@
 const
 //dependencias
 API = require('./connectAPIS'),
-TYC = require('./modules/tyc');
+TYC = require('./modules/tyc'),
+HELP = require('./modules/helpers');
 var
+messageData = HELP.messageData,
 //Manejo de eventos para el API de python
 messagePostbacks = (senderId, messageEvent) => {
   let message;
@@ -67,8 +69,6 @@ messagePostbacks = (senderId, messageEvent) => {
 handleResponsePython = (senderId, responsePython) => {
   let
   action = 'typingOff',
-  method = 'POST',
-  uri = 'me/messages',
   body = {
     messaging_type: 'RESPONSE',
     recipient: {
@@ -76,7 +76,7 @@ handleResponsePython = (senderId, responsePython) => {
     },
     sender_action: 'typing_off'
   };
-  API.facebookRequest(action, method, uri, body)
+  API.facebookRequest(action, HELP.method, HELP.uri, body)
   .then(() => {
     if(responsePython.sender.tyc === 0) {
       TYC.requestAccept(senderId, responsePython);
@@ -88,20 +88,14 @@ handleResponsePython = (senderId, responsePython) => {
 },
 //Enviar mensaje simple
 sendSimpleMessage = (senderId, responseApi) => {
-  let
-  action = 'simpleMessage',
-  method = 'POST',
-  uri = 'me/messages',
-  body = {
-    messaging_type: 'RESPONSE',
-    recipient: {
-      id : senderId
-    },
-    message: {
-      text: responseApi.text
-    }
+  let action = 'simpleMessage';
+
+  messageData.recipient.id = senderId;
+  messageData.message = {
+    text: responseApi.text
   };
-  API.facebookRequest(action, method, uri, body)
+
+  API.facebookRequest(action, HELP.method, HELP.uri, messageData)
   .then()
   .catch(error => console.log(error));
 };

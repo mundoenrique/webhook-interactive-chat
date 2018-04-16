@@ -4,32 +4,27 @@ const
 config = require('config'),
 express = require('express'),
 API = require('../connectAPIS'),
+HELP = require('./helpers'),
 //URL del servidor
 SERVER_URL = process.env.SERVER_URL ? process.env.SERVER_URL : config.get('serverUrl');
 var
 action = 'tyc',
 method = 'POST',
 uri = 'me/messages',
-body = {
-  messaging_type: 'RESPONSE',
-  recipient: {
-    id: ''
-  },
-  message: ''
-},
+messageData = HELP.messageData;
 //Solicita la aceptación de los términos y condiciones
 requestAccept = (senderId, resposeApi) => {
   let message = 'Hola soy Mia, el asistente Virtual de Tebca. Te ayudaré a realizar las consultas que necesites sobre tus tarjetas'; //resposeApi.text;
 
-  body.recipient.id = senderId;
-  body.message = {
+  messageData.recipient.id = senderId;
+  messageData.message = {
     text: message
   };
 
-  API.facebookRequest(action, method, uri, body)
+  API.facebookRequest(action, HELP.method, HELP.uri, messageData)
   .then(() => {
-    body.recipient.id = senderId;
-    body.message = {
+    messageData.recipient.id = senderId;
+    messageData.message = {
       attachment: {
         type: 'template',
         payload: {
@@ -56,30 +51,32 @@ requestAccept = (senderId, resposeApi) => {
         }
       }
     };
-    return API.facebookRequest(action, method, uri, body)
+    return API.facebookRequest(action, HELP.method, HELP.uri, messageData)
   })
   .then()
   .catch(error => console.log(error));
 },
 //Enviar adjunto los términos y condiciones
 sendFile = (senderId, message) => {
-  body.recipient.id = senderId;
-  body.message = {
-    attachment: {
-      type: 'file',
-      payload: {
-        url: SERVER_URL + 'download/Terminos_y_Condiciones.pdf'
+  return new Promise((resolve, reject) => {
+    messageData.recipient.id = senderId;
+    messageData.message = {
+      attachment: {
+        type: 'file',
+        payload: {
+          url: SERVER_URL + 'download/Terminos_y_Condiciones.pdf'
+        }
+
       }
-
     }
-  }
 
-  API.facebookRequest(action, method, uri, body)
-  .then()
-  .catch(error => console.log(error));
+    API.facebookRequest(action, HELP.method, HELP.uri, messageData)
+    .then(() => resolve())
+    .catch(error => reject(error));
+  })
 };
 
 module.exports = ({
   sendFile,
   requestAccept
-})
+});

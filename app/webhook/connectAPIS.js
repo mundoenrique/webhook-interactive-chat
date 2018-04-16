@@ -1,17 +1,17 @@
 'use strict'
 const
-  //Dependencias
-  config = require('config'),
-  request = require('request'),
-  //Token generado por el portal de facebook developers
-  MSN_ACCESS_TOKEN = process.env.MSN_ACCESS_TOKEN ? process.env.MSN_ACCESS_TOKEN : config.get('msnAccessToken'),
-  //API ´de facebook
-  FACEBOOK_API = process.env.FACEBOOK_API ? process.env.FACEBOOK_API : config.get('faceBookAPI'),
-  //API de Python
+//Dependencias
+config = require('config'),
+request = require('request'),
+//Token generado por el portal de facebook developers
+MSN_ACCESS_TOKEN = process.env.MSN_ACCESS_TOKEN ? process.env.MSN_ACCESS_TOKEN : config.get('msnAccessToken'),
+//API ´de facebook
+FACEBOOK_API = process.env.FACEBOOK_API ? process.env.FACEBOOK_API : config.get('faceBookAPI'),
+//API de Python
 PYTHON_API = process.env.PYTHON_API ? process.env.PYTHON_API : config.get('pythonAPI');
 
-//Request al API e facebook
 var
+//Request al API de facebook
 facebookRequest = (action, method, uri, body) => {
   let
     msg,
