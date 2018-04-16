@@ -1,17 +1,15 @@
 'use strict'
 const
-  api = require('./connectAPIS'),
-  settings = require('../models/settingsModels')
-;
+//Dependencias
+api = require('./connectAPIS'),
+settings = require('../models/settingsModels');
 
 var
-  action = 'persistent_menu',
-  method = 'POST',
-  uri ='me/messenger_profile'
-;
-
+action = 'persistent_menu',
+method = 'POST',
+uri ='me/messenger_profile',
 //inicia la pantalla de bienvenida
-var setWelcomeScreen = (setting) => {
+setWelcomeScreen = (setting) => {
   return new Promise((resolve, reject) => {
     let actions = [], body;
 
@@ -40,7 +38,7 @@ var setWelcomeScreen = (setting) => {
     .then(() => resolve())
     .catch(error => {reject(error)});
   });
-}
+};
 
 module.exports = ({
   setWelcomeScreen

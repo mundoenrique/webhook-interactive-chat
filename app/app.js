@@ -5,15 +5,14 @@
  */
 
 const
-  bodyParser = require('body-parser'),
-  config = require('config'),
-  crypto = require('crypto'),
-  express = require('express'),
-  request = require('request'),
-  webhookRoutes = require('./routes/webhookRoutes'),
-  //Clave secreta de la aplicación MESSENGER
-  MSN_APP_SECRET = (process.env.MSN_APP_SECRET) ? process.env.MSN_APP_SECRET : config.get('msnAppSecret')
-;
+bodyParser = require('body-parser'),
+config = require('config'),
+crypto = require('crypto'),
+express = require('express'),
+request = require('request'),
+webhookRoutes = require('./routes/webhookRoutes'),
+//Clave secreta de la aplicación MESSENGER
+MSN_APP_SECRET = (process.env.MSN_APP_SECRET) ? process.env.MSN_APP_SECRET : config.get('msnAppSecret');
 
 //Instancia express
 var app = express();
@@ -24,7 +23,7 @@ app.use(bodyParser.json({verify: verifyRequestSignature}));
 app.use(express.static('app/assets'));
 
 //Recibe peticiones http
-app.use('/', webhookRoutes);
+app.use(webhookRoutes);
 
 //Verifica que la solicitud proviene de facebook a través de la clave secreta de la aplicación
 function verifyRequestSignature(req, res, buf) {

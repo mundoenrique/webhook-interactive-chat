@@ -8,11 +8,11 @@ const
   //API ´de facebook
   FACEBOOK_API = process.env.FACEBOOK_API ? process.env.FACEBOOK_API : config.get('faceBookAPI'),
   //API de Python
-  PYTHON_API = process.env.PYTHON_API ? process.env.PYTHON_API : config.get('pythonAPI')
-;
+PYTHON_API = process.env.PYTHON_API ? process.env.PYTHON_API : config.get('pythonAPI');
 
 //Request al API e facebook
-var facebookRequest = (action, method, uri, body) => {
+var
+facebookRequest = (action, method, uri, body) => {
   let
     msg,
     senderId = body.recipient ? body.recipient.id : '',
@@ -51,10 +51,9 @@ var facebookRequest = (action, method, uri, body) => {
       error || response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
     });
   });
-}
-
+},
 //request API Python
-var pythonRequest = (senderId, dataUser, message) => {
+pythonRequest = (senderId, dataUser, message) => {
   let
     body = {
       sender: {
