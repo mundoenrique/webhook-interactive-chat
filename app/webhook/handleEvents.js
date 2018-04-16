@@ -2,8 +2,9 @@
 const
 //dependencias
 API = require('./connectAPIS'),
+HELP = require('./modules/helpers'),
 TYC = require('./modules/tyc'),
-HELP = require('./modules/helpers');
+OPER = require('./modules/operations');
 var
 messageData = HELP.messageData,
 //Manejo de eventos para el API de python
@@ -80,7 +81,10 @@ handleResponsePython = (senderId, responsePython) => {
   .then(() => {
     if(responsePython.sender.tyc === 0) {
       TYC.requestAccept(senderId, responsePython);
-    } else {
+    } else if(responsePython.operations) {
+      OPER.setOperations(senderId, responsePython);
+    }
+    else {
       sendSimpleMessage(senderId, responsePython);
     }
   })
