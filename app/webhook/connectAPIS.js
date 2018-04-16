@@ -24,7 +24,7 @@ var facebookRequest = (action, method, uri, body) => {
       msg = 'Activar botón \"Empezar\", saludo y menú persistente';
       break;
     case 'dataUser':
-      msg = 'datos públicos del usuario: senderId ';
+      msg = 'Datos públicos del usuario: senderId ';
       userId = senderId;
       break;
     default:
@@ -32,7 +32,7 @@ var facebookRequest = (action, method, uri, body) => {
 
   }
   return new Promise((resolve, reject) => {
-    console.log('--------REQUEST facebook %s %s--------', msg, senderId);
+    console.log('--------REQUEST %s facebook %s %s--------', action, msg, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
     request({
@@ -43,7 +43,7 @@ var facebookRequest = (action, method, uri, body) => {
       json: body,
     }, (error, response, body) => {
       let fail = error ? error : '';
-      console.log('--------RESPONSE facebook %s %s--------', msg, senderId);
+      console.log('--------RESPONSE %s facebook %s %s--------', action, msg, senderId);
       console.log('statusCode:', response.statusCode);
       console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
@@ -76,18 +76,17 @@ var pythonRequest = (senderId, dataUser, message) => {
       json: body,
     }, (error, response, body) => {
       let
-        fail = error ? error : '',
-        statusCode = error ? 500 : response.statusCode,
-        statusMessage = error ? 'Error' : response.statusMessage,
-        resPython = body ? body : ''
-      ;
+      fail = error ? error : '',
+      statusCode = error ? 500 : response.statusCode,
+      statusMessage = error ? 'Error' : response.statusMessage,
+      resPython = body ? body : '';
 
       console.log('----RESPONSE python senderId %s----', senderId);
       console.log('statusCode:', statusCode);
       console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
       console.log('---------------------------------------------------');
-      error || response.statusCode !== 200 ? reject({action: 'python', error}) : resolve(body);
+      !statusCode ? reject(new Error(error)) : resolve({statusCode: response.statusCode, body: body});
     });
   });
 }

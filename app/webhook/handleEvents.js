@@ -7,7 +7,6 @@ var
 //Manejo de eventos para el API de python
 messagePostbacks = (senderId, messageEvent) => {
   let message;
-
   //Verifica si el evento es un MESSAGE o un POSTBACK
   if(messageEvent.message) {
     if(messageEvent.message.text) {
@@ -24,34 +23,36 @@ messagePostbacks = (senderId, messageEvent) => {
     case 'leer':
       TYC.sendFile(senderId);
       break;
-    case 'downloadConditions':
     case 'preguntas':
     case 'acepto':
     case 'viewMore':
     default:
-    let
-    action = 'dataUser',
-    method = 'GET',
-    uri = '',
-    body = {
-      recipient: {
-        id: senderId
-      }
-    };
-    API.facebookRequest(action, method, uri, body)
-    .then(dataUser => {
-      return API.pythonRequest(senderId, dataUser, message);
-    })
-    .then(responsePython => {
-      return handleResponsePython(senderId, responsePython);
-    })
-    .catch(error => {
-      console.log(error);
-      if(error.action) {
-        let message = 'lo siento en este momento no puedo atender tu solicitud, por favor intente en unos minutos';
-        handleResponsePython = (senderId, message);
-      }
-    });
+      let
+      action = 'dataUser',
+      method = 'GET',
+      uri = '',
+      body = {
+        recipient: {
+          id: senderId
+        }
+      };
+      API.facebookRequest(action, method, uri, body)
+      .then(dataUser => {
+        return API.pythonRequest(senderId, dataUser, message);
+      })
+      .then(response => {
+        let
+        statusCode = response.statusCode,
+        responsePython = response.body;
+        if(statusCode !== 200) {
+          responsePython = {
+            sender: {tyc: 1},
+            text: 'Lo siento en este momento no puedo atender tu solicitud, por favor intenta en unos minutos'
+          };
+        }
+        return handleResponsePython(senderId, responsePython);
+      })
+      .catch(error => console.log(error));
   }
 },
 //Maneja la respuesta del API de python
@@ -69,18 +70,17 @@ handleResponsePython = (senderId, responsePython) => {
   };
   API.facebookRequest(action, method, uri, body)
   .then(() => {
-    if(responsePython.sender.tyc) {
+    if(responsePython.sender.tyc === 0) {
       TYC.requestAccept(senderId, responsePython);
     } else {
       sendSimpleMessage(senderId, responsePython);
     }
   })
-  .catch(error => console.log(error))
+  .catch(error => console.log(error));
 },
 //Enviar mensaje simple
 sendSimpleMessage = (senderId, responseApi) => {
   let
-  message = responseApi.text ? responseApi.text : responseApi,
   action = 'simpleMessage',
   method = 'POST',
   uri = 'me/messages',
@@ -90,7 +90,7 @@ sendSimpleMessage = (senderId, responseApi) => {
       id : senderId
     },
     message: {
-      text: message
+      text: responseApi.text
     }
   };
   API.facebookRequest(action, method, uri, body)
@@ -100,4 +100,4 @@ sendSimpleMessage = (senderId, responseApi) => {
 
 module.exports = ({
   messagePostbacks
-})
+});
