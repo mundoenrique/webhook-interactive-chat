@@ -9,9 +9,7 @@ HELP = require('./helpers'),
 SERVER_URL = process.env.SERVER_URL ? process.env.SERVER_URL : config.get('serverUrl');
 var
 action = 'tyc',
-method = 'POST',
-uri = 'me/messages',
-messageData = HELP.messageData;
+messageData = HELP.messageData,
 //Solicita la aceptación de los términos y condiciones
 requestAccept = (senderId, resposeApi) => {
   let message = 'Hola soy Mia, el asistente Virtual de Tebca. Te ayudaré a realizar las consultas que necesites sobre tus tarjetas'; //resposeApi.text;
