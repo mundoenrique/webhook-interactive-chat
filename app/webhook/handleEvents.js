@@ -21,10 +21,11 @@ messagePostbacks = (senderId, messageEvent) => {
   }
   switch (message) {
     case 'leer':
-      TYC.sendFile(senderId);
+      TYC.sendFile(senderId)
+      .then()
+      .catch((error) => console.log(error))
       break;
     case 'preguntas':
-    case 'acepto':
     case 'viewMore':
     default:
       let
@@ -35,23 +36,29 @@ messagePostbacks = (senderId, messageEvent) => {
         recipient: {
           id: senderId
         }
-      };
-
+      },
+      dataUser;
+      //inicia secuencia de promesas
       API.facebookRequest(action, method, uri, body)
-      .then(dataUser => {
+      .then(facebookResponse => {
+        dataUser = facebookResponse;
+        return message === 'acepto' ? TYC.sendFile(senderId) : true;
+      })
+      .then(TyCresponse => {
         return API.pythonRequest(senderId, dataUser, message);
       })
-      .then(response => {
+      .then(pythonResponse => {
         let
-        statusCode = response.statusCode,
-        responsePython = response.body;
+        statusCode = pythonResponse.statusCode,
+        responsePython = pythonResponse.body;
+        //Evalua si el código de la respuesta es 200
         if(statusCode !== 200) {
           responsePython = {
             sender: {tyc: 1},
             text: 'Lo siento en este momento no puedo atender tu solicitud, por favor intenta en unos minutos'
           };
         }
-        return handleResponsePython(senderId, responsePython);
+        handleResponsePython(senderId, responsePython);
       })
       .catch(error => console.log(error));
   }
@@ -96,7 +103,7 @@ sendSimpleMessage = (senderId, responseApi) => {
   };
   API.facebookRequest(action, method, uri, body)
   .then()
-  .catch(error => console.log(error))
+  .catch(error => console.log(error));
 };
 
 module.exports = ({
