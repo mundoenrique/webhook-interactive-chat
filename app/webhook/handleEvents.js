@@ -36,6 +36,7 @@ messagePostbacks = (senderId, messageEvent) => {
           id: senderId
         }
       };
+
       API.facebookRequest(action, method, uri, body)
       .then(dataUser => {
         return API.pythonRequest(senderId, dataUser, message);
