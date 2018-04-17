@@ -2,7 +2,6 @@
 const
 //Dependencias
 config = require('config'),
-express = require('express'),
 API = require('../connectAPIS'),
 HELP = require('./helpers'),
 //URL del servidor

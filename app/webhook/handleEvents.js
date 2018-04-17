@@ -4,7 +4,8 @@ const
 API = require('./connectAPIS'),
 HELP = require('./modules/helpers'),
 TYC = require('./modules/tyc'),
-OPER = require('./modules/operations');
+OPER = require('./modules/operations'),
+QUEST = require('./modules/questions');
 var
 messageData = HELP.messageData,
 //Manejo de eventos para el API de python
@@ -29,6 +30,8 @@ messagePostbacks = (senderId, messageEvent) => {
       .catch((error) => console.log(error))
       break;
     case 'preguntas':
+      QUEST.otherConsultaions(senderId);
+      break;
     case 'viewMore':
     default:
       let

@@ -85,7 +85,7 @@ pythonRequest = (senderId, dataUser, message) => {
       console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
       console.log('---------------------------------------------------');
-      !statusCode ? reject(new Error(error)) : resolve({statusCode: response.statusCode, body: body});
+      !statusCode ? reject(new Error(error)) : resolve({statusCode: statusCode, body: body});
     });
   });
 }
