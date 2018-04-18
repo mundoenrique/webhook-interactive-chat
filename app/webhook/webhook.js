@@ -2,13 +2,14 @@
 const
 //Dependencias
 config = require('config'),
-moment = require('moment'),
 API = require('./connectAPIS'),
 EVENTS = require('./handleEvents'),
 //Token de validación del webhook
 WEBHOOK_TOKEN = (process.env.WEBHOOK_TOKEN) ? process.env.WEBHOOK_TOKEN : config.get('webHookToken');
 //Valida webhook
 var
+//Hora actual
+currentTime = require('./modules/helpers').currentTime,
 verifyWebhook = (req, res) => {
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === WEBHOOK_TOKEN) {
@@ -39,8 +40,7 @@ webhookMessaging = (req, res) => {
       },
       sender_action: "typing_on"
     };
-    console.log('-----%s Evento webhook recibido: senderId %s-----', moment(timeOfEvent)
-    .format("YYYY-MM-DD HH:mm:ss"), senderId);
+    console.log('-----%s Evento webhook recibido: senderId %s-----', currentTime, senderId);
     console.log(messageEvent);
     console.log('---------------------------------------------------------------------');
 
@@ -52,7 +52,6 @@ webhookMessaging = (req, res) => {
       } else if (messageEvent.delivery) {
 
       } else if (messageEvent.optin) {
-
 
       } else if (messageEvent.read) {
 

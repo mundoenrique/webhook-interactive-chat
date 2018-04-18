@@ -1,5 +1,10 @@
 'use strict'
+const monment = require('moment');
 var
+//Hora actual
+currentTime = monment().format("YYYY-MM-DD HH:mm:ss"),
+//Acción a realizar
+action,
 //Método de envío de los mensajes al usuario
 method = 'POST',
 //uri de los mensajes al usuario
@@ -14,6 +19,8 @@ messageData = {
 };
 
 module.exports = ({
+  currentTime,
+  action,
   method,
   uri,
   messageData
