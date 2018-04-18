@@ -11,14 +11,15 @@ FACEBOOK_API = process.env.FACEBOOK_API ? process.env.FACEBOOK_API : config.get(
 PYTHON_API = process.env.PYTHON_API ? process.env.PYTHON_API : config.get('pythonAPI');
 
 var
+//Hora actual
+currentTime = require('./modules/helpers').currentTime,
 //Request al API de facebook
 facebookRequest = (action, method, uri, body) => {
   let
-    msg,
-    senderId = body.recipient ? body.recipient.id : '',
-    userId = ''
-  ;
-
+  msg,
+  senderId = body.recipient ? body.recipient.id : '',
+  userId = '';
+  //Evalua la acción que va a realizar la función
   switch (action) {
     case 'persistent_menu':
       msg = 'Activar botón \"Empezar\", saludo y menú persistente';
@@ -32,7 +33,7 @@ facebookRequest = (action, method, uri, body) => {
 
   }
   return new Promise((resolve, reject) => {
-    console.log('--------REQUEST %s facebook %s %s--------', action, msg, senderId);
+    console.log('-------- %s \"%s\" REQUEST facebook %s %s--------', currentTime, action, msg, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
     request({
@@ -43,7 +44,7 @@ facebookRequest = (action, method, uri, body) => {
       json: body,
     }, (error, response, body) => {
       let fail = error ? error : '';
-      console.log('--------RESPONSE %s facebook %s %s--------', action, msg, senderId);
+      console.log('--------%s \"%s\" RESPONSE facebook %s %s--------', currentTime, action, msg, senderId);
       console.log('statusCode:', response.statusCode);
       console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
@@ -66,7 +67,7 @@ pythonRequest = (senderId, dataUser, message) => {
     }
   ;
   return new Promise((resolve, reject) => {
-    console.log('----REQUEST python senderId %s----', senderId);
+    console.log('----%s REQUEST python senderId %s----', currentTime, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
     request({
@@ -80,7 +81,7 @@ pythonRequest = (senderId, dataUser, message) => {
       statusMessage = error ? 'Error' : response.statusMessage,
       resPython = body ? body : '';
 
-      console.log('----RESPONSE python senderId %s----', senderId);
+      console.log('----%s RESPONSE python senderId %s----', currentTime, senderId);
       console.log('statusCode:', statusCode);
       console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
