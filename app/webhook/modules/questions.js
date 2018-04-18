@@ -7,10 +7,10 @@ HELP = require('./helpers'),
 //URL del Servidor
 SERVER_URL = process.env.SERVER_URL ? process.env.SERVER_URL : config.get('serverUrl');
 var
-action = 'questions',
 messageData = HELP.messageData,
 //Preguntas disponibles
 otherConsultaions = (senderId) => {
+  HELP.action = 'questions'
   messageData.recipient.id = senderId;
   messageData.message = {
     attachment: {
@@ -40,7 +40,7 @@ otherConsultaions = (senderId) => {
       }
     }
   };
-  API.facebookRequest(action, HELP.method, HELP.uri, messageData)
+  API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
   .then(() => {
     messageData.message = {
       attachment: {
@@ -64,7 +64,7 @@ otherConsultaions = (senderId) => {
         }
       }
     }
-    return API.facebookRequest(action, HELP.method, HELP.uri, messageData)
+    return API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
   })
   .then()
   .catch(error => console.log(error))

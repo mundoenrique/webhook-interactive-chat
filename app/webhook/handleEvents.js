@@ -85,7 +85,11 @@ handleResponsePython = (senderId, responsePython) => {
     if(responsePython.sender.tyc === 0) {
       TYC.requestAccept(senderId, responsePython);
     } else if(responsePython.operations) {
-      OPER.setOperations(senderId, responsePython);
+      OPER.sendOperations(senderId, responsePython);
+    } else if(responsePython.notification) {
+      OPER.tokenShippingOptions(senderId, responsePython);
+    } else if(responsePython.website) {
+      OPER.withoutProducts(senderId, responsePython);
     }
     else {
       sendSimpleMessage(senderId, responsePython);
