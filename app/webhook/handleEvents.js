@@ -5,7 +5,8 @@ API = require('./connectAPIS'),
 HELP = require('./modules/helpers'),
 TYC = require('./modules/tyc'),
 OPER = require('./modules/operations'),
-QUEST = require('./modules/questions');
+QUEST = require('./modules/questions'),
+BAL = require('./modules/balance');
 var
 messageData = HELP.messageData,
 //Manejo de eventos para el API de python
@@ -64,6 +65,7 @@ messagePostbacks = (senderId, messageEvent) => {
             text: 'Lo siento en este momento no puedo atender tu solicitud, por favor intenta en unos minutos'
           };
         }
+
         handleResponsePython(senderId, responsePython);
       })
       .catch(error => console.log(error));
@@ -82,6 +84,7 @@ handleResponsePython = (senderId, responsePython) => {
   };
   API.facebookRequest(action, HELP.method, HELP.uri, body)
   .then(() => {
+
     if(responsePython.sender.tyc === 0) {
       TYC.requestAccept(senderId, responsePython);
     } else if(responsePython.operations) {
@@ -90,8 +93,9 @@ handleResponsePython = (senderId, responsePython) => {
       OPER.tokenShippingOptions(senderId, responsePython);
     } else if(responsePython.website) {
       OPER.withoutProducts(senderId, responsePython);
-    }
-    else {
+    } else if(responsePython.cardList) {
+      BAL.sendBalance(senderId, responsePython);
+    } else {
       sendSimpleMessage(senderId, responsePython);
     }
   })

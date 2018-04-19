@@ -12,7 +12,7 @@ messageData = HELP.messageData,
 //Operaciones disponobles
 sendOperations = (senderId, responsePython) => {
   let elementsTemplate = [];
-  HELP.action = 'operations'
+  HELP.action = 'operations';
 
   responsePython.operations.forEach(operation => {
     let
