@@ -16,12 +16,24 @@ messageData = {
     id: ''
   },
   message: ''
-};
+},
+objectTrasform = (element) => {
+  let elementList = []
+
+  if(element[0]) {
+    elementList = element
+  } else {
+    elementList.push(element)
+  }
+
+  return elementList;
+}
 
 module.exports = ({
   currentTime,
   action,
   method,
   uri,
-  messageData
+  messageData,
+  objectTrasform
 });

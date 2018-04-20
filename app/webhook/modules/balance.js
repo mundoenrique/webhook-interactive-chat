@@ -12,16 +12,36 @@ messageData = HELP.messageData,
 sendBalance = (senderId, responsePython) => {
   let
   elementsTemplate = [],
-  cardList = [];
+  cardList = HELP.objectTrasform(responsePython.cardlist);
   HELP.action = 'balance';
-  if(responsePython.cardlist[0]) {
-    cardList = responsePython.cardlist;
-  } else {
-    cardList.push(responsePython.cardlist)
-  }
-  console.log(typeof(cardList));
-  console.log(cardList);
 
+  cardList.forEach(card => {
+    let element = {};
+    element['title'] = 'Saldo disponible: S/' + parseFloat(card.balance).toFixed(2);
+    element['subtitle'] = 'Tarjeta: ' + card.maskedCard;
+    element['image_url'] = SERVER_URL + 'img/tarjeta_Provis.png';
+    element['buttons'] = [{
+      type: 'postback',
+      title: 'Movimientos',
+      payload: 'movimientos ' + card.maskedCard
+    }];
+    elementsTemplate.push(element)
+  });
+
+  messageData.recipient.id = senderId;
+  messageData.message = {
+    attachment: {
+      type: 'template',
+      payload: {
+        template_type: 'generic',
+        sharable: false,
+        elements: elementsTemplate
+      }
+    }
+  }
+  API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
+  .then()
+  .catch(error => console.log(error));
 }
 
 module.exports = ({
