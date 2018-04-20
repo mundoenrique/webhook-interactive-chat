@@ -65,6 +65,45 @@ messagePostbacks = (senderId, messageEvent) => {
             text: 'Lo siento en este momento no puedo atender tu solicitud, por favor intenta en unos minutos'
           };
         }
+        responsePython = { cardlist:
+          [ { accountId: '646',
+              balance: '0.0',
+              cardId: '606',
+              cardNumber: '0',
+              'exp-date': '1120',
+              main: '49',
+              maskedCard: '**********994611',
+              prefix: 'B',
+              status: '1',
+              version: '2018-02-03T14:08:07-05:00' },
+            { accountId: '646',
+              balance: '149.33',
+              cardId: '607',
+              cardNumber: '0',
+              'exp-date': '1120',
+              main: '48',
+              maskedCard: '**********994629',
+              prefix: 'B',
+              status: '1',
+              version: '2018-02-03T14:08:07-05:00' } ],
+         'message-type': [ 'balance' ],
+         sender:
+          { _id: '',
+            'external-id': '1584448361632866',
+            'facebook-data':
+             { first_name: 'Milagros',
+               gender: 'female',
+               id: '1584448361632866',
+               last_name: 'MG',
+               locale: 'es_ES',
+               profile_pic: 'https://lookaside.facebook.com/platform/profilepic/?psid=1584448361632866&width=1024&ext=1523826675&hash=AeQiu1KGVNgCvphe',
+               timezone: -5 },
+            'first-name': 'Milagros',
+            'last-name': 'MG',
+            status: 'A',
+            tyc: 1 },
+         text: 'El saldo disponible en tu tarjeta es de: ',
+         trxDate: '2018-04-12 21:11:19.344' }
 
         handleResponsePython(senderId, responsePython);
       })
@@ -93,7 +132,7 @@ handleResponsePython = (senderId, responsePython) => {
       OPER.tokenShippingOptions(senderId, responsePython);
     } else if(responsePython.website) {
       OPER.withoutProducts(senderId, responsePython);
-    } else if(responsePython.cardList) {
+    } else if(responsePython.cardlist) {
       BAL.sendBalance(senderId, responsePython);
     } else {
       sendSimpleMessage(senderId, responsePython);

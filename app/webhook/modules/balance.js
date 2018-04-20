@@ -12,12 +12,15 @@ messageData = HELP.messageData,
 sendBalance = (senderId, responsePython) => {
   let
   elementsTemplate = [],
-  cardList = responsePython.cardList;
+  cardList = [];
   HELP.action = 'balance';
-  console.log(typeof(cardList));
-  if(typeof(cardList) !== 'array') {
-
+  if(responsePython.cardlist[0]) {
+    cardList = responsePython.cardlist;
+  } else {
+    cardList.push(responsePython.cardlist)
   }
+  console.log(typeof(cardList));
+  console.log(cardList);
 
 }
 
