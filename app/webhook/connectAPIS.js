@@ -36,6 +36,7 @@ facebookRequest = (action, method, uri, body) => {
     console.log('-------- %s \"%s\" REQUEST facebook %s %s--------', currentTime, action, msg, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
+    //Envia solicitud al API de facebook
     request({
       method: method,
       headers: {"content-type": "application/json"},
@@ -70,6 +71,7 @@ pythonRequest = (senderId, dataUser, message) => {
     console.log('----%s REQUEST python senderId %s----', currentTime, senderId);
     console.log(body);
     console.log('--------------------------------------------------');
+    //envía solicitud al API de python
     request({
       method: 'POST',
       url: PYTHON_API,

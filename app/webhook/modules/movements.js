@@ -6,7 +6,6 @@ redis = require('redis'),
 monment = require('moment'),
 API = require('../connectAPIS'),
 HELP = require('./helpers'),
-EVENTS = require('../handleEvents'),
 //Puerto para redis
 REDIS_PORT = process.env.REDIS_PORT ? process.env.REDIS_PORT : config.get('redisPort'),
 //IP para redis
@@ -50,48 +49,48 @@ SetMovementsRedis = (senderId, responsePython) => {
 //Obtiene los movimientos de REDIS
 getMovementsRedis = (senderId) => {
   let total, min, max, plus, movements;
-  //Obtiene los ultimos 3 movimientos
+  //Obtiene el resumen de los movimientos
   new Promise((resolve, reject) => {
-    REDIS_CLIENT.lrange('moves-' + senderId, 0, 2, (error, reply) => {
-      error ? reject(new Error(error)) : resolve(reply)
+    REDIS_CLIENT.hgetall('summary-' + senderId, (error, reply) => {
+      if(!reply && !error) {
+        let messageEvent = {message:{text: 'leer'}};
+        require('../handleEvents').messagePostbacks(senderId, messageEvent);
+      } else {
+        error ? reject(new Error(error)) : resolve(reply);
+      }
     });
   })
-  .then((reply) => {
-    if(reply.length > 0) {
-      movements = reply;
-      //Borra los movimientos obtenidos
-      return new Promise((resolve, reject)=> {
-        REDIS_CLIENT.ltrim('moves-' + senderId, 3, -1, (error, reply) => {
-          error ? reject(new Error(error)) : resolve(reply);
-        });
-      });
-    }
-    let messageEvent = {message:{text: 'movimientos'}};
-    EVENTS.messagePostbacks(senderId, messageEvent);
-  })
-  .then((reply) => {
-    //Obtiene el resumen de los movimientos
+  .then(summary => {
+    total = parseInt(summary.total);
+    min = parseInt(summary.min) > total ? total : parseInt(summary.min);
+    max = parseInt(summary.max) > total ? total : parseInt(summary.max);
+    //Incremneta el mínimo y el máximo
+    REDIS_CLIENT.hincrby('summary-' + senderId, 'min', 3);
+    REDIS_CLIENT.hincrby('summary-' + senderId, 'max', 3);
+    //Si no existen mas movimientos elimina el resumen
+    min + 3 > total ? REDIS_CLIENT.del('summary-' + senderId) : '';
+
+    //Obtiene los ultimos 3 movimientos
     return new Promise((resolve, reject) => {
-      REDIS_CLIENT.hgetall('summary-' + senderId, (error, reply) => {
+      REDIS_CLIENT.lrange('moves-' + senderId, 0, 2, (error, reply) => {
         error ? reject(new Error(error)) : resolve(reply);
       });
     });
   })
-  .then((reply) => {
-    total = parseInt(reply.total);
-    min = parseInt(reply.min) > total ? total : parseInt(reply.min);
-    max = parseInt(reply.max) > total ? total : parseInt(reply.max);
-
-    //Incremneta el mínimo y el máximo
-    REDIS_CLIENT.hincrby('summary-' + senderId, 'min', 3);
-    REDIS_CLIENT.hincrby('summary-' + senderId, 'max', 3);
-
-    min + 3 > total ? REDIS_CLIENT.del('summary-' + senderId) : '';
-
-    sendCardMovements(senderId, total, min, max, movements);
+  .then(moves => {
+    movements = moves;
+    //Borra los movimientos obtenidos
+    return new Promise((resolve, reject) => {
+      REDIS_CLIENT.ltrim('moves-' + senderId, 3, -1, (error, reply) => {
+        error ? reject(new Error(error)) : resolve(reply)
+      });
+    });
+  })
+  .then(() => {
+    //Envía los movimientos al usuario
+    sendCardMovements(senderId, total, min, max, movements)
   })
   .catch(error => console.log(error));
-
 },
 //Envía los movimientos al usuario
 sendCardMovements = (senderId, total, min, max, movements) => {
@@ -124,7 +123,7 @@ sendCardMovements = (senderId, total, min, max, movements) => {
       }
     }
   }
-  return API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
+  API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
   .then(() => {
     if(max < total) {
       let
