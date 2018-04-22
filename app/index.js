@@ -26,14 +26,14 @@ app.set('port', APP_PORT);
 
 //ConeEctar Redis
 REDIS_CLIENT.on('connect', () => {
-  console.log('------------------Iniciando la aplicación------------------');
+  console.log('--------Iniciando bases de datos--------');
   console.log('Redis se está ejecutando satisfactoriamente');
   //Conectar mongo
   mongoose.Promise = global.Promise;
   mongoose.connect('mongodb://' + MONGO_HOST + ':' + MONGO_PORT + '/' + MONGO_COLLECTION)
   .then(() => {
     console.log('Colección de Mongo \"%s\" lista', MONGO_COLLECTION);
-
+    console.log('------------------------------------------------------------------------');
     //Obtener los parámetros para la pantalla de bienvenida
     return settings.getSettings();
   })
@@ -44,9 +44,9 @@ REDIS_CLIENT.on('connect', () => {
   .then(() => {
     //Iniciar del servidor nodeJs
     app.listen(app.get('port'), () => {
-
+      console.log('--------Iniciando la aplicación--------');
       console.log('La aplicación nodeJS está corriendo sobre el puerto ', app.get('port'));
-      console.log('-----------------------------------------------------------');
+      console.log('------------------------------------------------------------------------');
     });
   })
   .catch(error => console.log(error));

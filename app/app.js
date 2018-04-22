@@ -52,7 +52,7 @@ function verifyRequestSignature(req, res, buf) {
     }
   }
   console.log(msg);
-  console.log('------------------------------------------------');
+  console.log('------------------------------------------------------------------------');
 }
 
 module.exports = app;

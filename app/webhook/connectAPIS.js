@@ -33,9 +33,9 @@ facebookRequest = (action, method, uri, body) => {
 
   }
   return new Promise((resolve, reject) => {
-    console.log('-------- %s \"%s\" REQUEST facebook %s %s--------', currentTime, action, msg, senderId);
+    console.log('----%s \"%s\" REQUEST facebook %s %s----', currentTime, action, msg, senderId);
     console.log(body);
-    console.log('--------------------------------------------------');
+    console.log('------------------------------------------------------------------------');
     //Envia solicitud al API de facebook
     request({
       method: method,
@@ -45,11 +45,11 @@ facebookRequest = (action, method, uri, body) => {
       json: body,
     }, (error, response, body) => {
       let fail = error ? error : '';
-      console.log('--------%s \"%s\" RESPONSE facebook %s %s--------', currentTime, action, msg, senderId);
+      console.log('----%s \"%s\" RESPONSE facebook %s %s----', currentTime, action, msg, senderId);
       console.log('statusCode:', response.statusCode);
       console.log('statusMessage:', response.statusMessage);
       console.log(body, fail);
-      console.log('---------------------------------------------------');
+      console.log('------------------------------------------------------------------------');
       error || response.statusCode !== 200 ? reject(new Error(action)) : resolve(body);
     });
   });
@@ -70,7 +70,7 @@ pythonRequest = (senderId, dataUser, message) => {
   return new Promise((resolve, reject) => {
     console.log('----%s REQUEST python senderId %s----', currentTime, senderId);
     console.log(body);
-    console.log('--------------------------------------------------');
+    console.log('------------------------------------------------------------------------');
     //envía solicitud al API de python
     request({
       method: 'POST',
@@ -87,7 +87,7 @@ pythonRequest = (senderId, dataUser, message) => {
       console.log('statusCode:', statusCode);
       console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
-      console.log('---------------------------------------------------');
+      console.log('------------------------------------------------------------------------');
       !statusCode ? reject(new Error(error)) : resolve({statusCode: statusCode, body: body});
     });
   });

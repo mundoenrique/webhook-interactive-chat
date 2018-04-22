@@ -42,7 +42,7 @@ webhookMessaging = (req, res) => {
     };
     console.log('-----%s Evento webhook recibido: senderId %s-----', currentTime, senderId);
     console.log(messageEvent);
-    console.log('---------------------------------------------------------------------');
+    console.log('------------------------------------------------------------------------');
 
     API.facebookRequest(action, method, uri, body)
     .then(() => {
