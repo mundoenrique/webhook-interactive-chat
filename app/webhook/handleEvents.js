@@ -15,36 +15,34 @@ messagePostbacks = (senderId, messageEvent) => {
   let message;
   //Verifica si el evento es un MESSAGE o un POSTBACK
   if(messageEvent.message) {
-    if(messageEvent.message.text) {
-      message = messageEvent.message.text.toLowerCase();
-    } else if(messageEvent.message.attachments) {
+    if(messageEvent.message.attachments) {
       message = messageEvent.message.attachments;
-    } else if (messageEvent.message.quick_reply) {
-      message = messageEvent.message.quick_reply;
+    } else if(messageEvent.message.quick_reply) {
+      message = messageEvent.message.quick_reply.payload;
+    } else if (messageEvent.message.text) {
+      message = messageEvent.message.text.toLowerCase();
     }
   } else if(messageEvent.postback) {
     message = messageEvent.postback.payload;
   }
+  //Evalua el mensaje recibido
   switch (message) {
     case 'leer':
       TYC.sendFile(senderId)
-      .then()
       .catch((error) => console.log(error))
       break;
     case 'preguntas':
       QUEST.otherConsultaions(senderId);
       break;
     case 'viewMore':
+      MOV.getMovementsRedis(senderId);
+      break;
     default:
       let
       action = 'dataUser',
       method = 'GET',
       uri = '',
-      body = {
-        recipient: {
-          id: senderId
-        }
-      },
+      body = {recipient: {id: senderId}},
       dataUser;
       //inicia secuencia de promesas
       API.facebookRequest(action, method, uri, body)
@@ -53,7 +51,7 @@ messagePostbacks = (senderId, messageEvent) => {
         return message === 'acepto' ? TYC.sendFile(senderId) : true;
       })
       .then(TyCresponse => {
-        return API.pythonRequest(senderId, dataUser, message);
+        return true//API.pythonRequest(senderId, dataUser, message);
       })
       .then(pythonResponse => {
         let
@@ -340,7 +338,7 @@ handleResponsePython = (senderId, responsePython) => {
     } else if(responsePython.cardlist) {
       BAL.sendBalance(senderId, responsePython);
     } else if(responsePython.cardmovements) {
-      MOV.getCardMovements(senderId, responsePython);
+      MOV.SetMovementsRedis(senderId, responsePython);
     } else {
       sendSimpleMessage(senderId, responsePython);
     }

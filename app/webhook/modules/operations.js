@@ -53,7 +53,7 @@ sendOperations = (senderId, responsePython) => {
   .then()
   .catch(error => console.log(error))
 },
-//Opciones de envío de Token
+//Opciones de envío del Token
 tokenShippingOptions = (senderId, responsePython) => {
   let
   notification = responsePython.notification,
