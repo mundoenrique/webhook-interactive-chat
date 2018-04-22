@@ -57,19 +57,19 @@ facebookRequest = (action, method, uri, body) => {
 //request API Python
 pythonRequest = (senderId, dataUser, message) => {
   let
-    body = {
-      sender: {
-        "external-id": senderId,
-				"first-name": dataUser.first_name,
-				"last-name": dataUser.last_name,
-				"facebook-data": dataUser
-      },
-      text: message
-    }
-  ;
+  body = {
+    sender: {
+      "external-id": senderId,
+      "first-name": dataUser.first_name,
+      "last-name": dataUser.last_name,
+      "facebook-data": dataUser
+    },
+    text: message
+  };
   return new Promise((resolve, reject) => {
     console.log('----%s REQUEST python senderId %s----', currentTime, senderId);
-    console.log(body);
+    console.log(`facebook-data: ${dataUser.first_name} ${dataUser.last_name} ...`)
+    console.log(`text: ${body.text}`);
     console.log('------------------------------------------------------------------------');
     //envía solicitud al API de python
     request({
