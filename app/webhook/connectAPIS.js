@@ -77,18 +77,36 @@ pythonRequest = (senderId, dataUser, message) => {
       url: PYTHON_API,
       json: body,
     }, (error, response, body) => {
+      body = { 'message-type': [],
+      notification: { SMS: '*****8192', email: '*****orres.l@gmail.com' },
+      sender:
+       { _id: '',
+         'external-id': '1885075991564517',
+         'first-name': 'Hvrlvis',
+         'last-name': 'Tiimba',
+         tyc: 1 },
+      text: 'Muy bien, por ser la primera vez y para verificar que eres tú, te enviare un código de confirmación. Elije por donde prefieres recibirlo ',
+      trxDate: '2018-04-18 02:10:28.902' }
+
       let
       fail = error ? error : '',
       statusCode = error ? 500 : response.statusCode,
       statusMessage = error ? 'Error' : response.statusMessage,
       resPython = body ? body : '';
 
+      delete resPython.sender['facebook-data'];
+      console.log('Body----------------------------', body);
+      console.log('resPython-----------------------', resPython);
+
+
+      /*
       console.log('----%s RESPONSE python senderId %s----', currentTime, senderId);
       console.log('statusCode:', statusCode);
       console.log('statusMessage:', statusMessage);
       console.log(resPython, fail);
       console.log('------------------------------------------------------------------------');
       !statusCode ? reject(new Error(error)) : resolve({statusCode: statusCode, body: body});
+      */
     });
   });
 }
