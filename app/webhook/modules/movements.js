@@ -10,6 +10,8 @@ HELP = require('./helpers'),
 REDIS_PORT = process.env.REDIS_PORT ? process.env.REDIS_PORT : config.get('redisPort'),
 //IP para redis
 REDIS_HOST =  process.env.REDIS_HOST ? process.env.REDIS_HOST : config.get('redisHost'),
+//tiempo de vigencia de la BD en redis
+REDIS_TIME = config.get('redisTimeDb'),
 //Instancia para conectar redis
 REDIS_CLIENT = redis.createClient(REDIS_PORT, REDIS_HOST);
 var
@@ -40,8 +42,8 @@ SetMovementsRedis = (senderId, responsePython) => {
     //Crea el resumen de los movimientos en REDIS
     REDIS_CLIENT.hmset('summary-' + senderId, ['total', reply, 'min', 1, 'max', 3]);
     //Fija tiempo de vencimiento de los datos en REDIS
-    REDIS_CLIENT.expire('moves-' + senderId, 10);
-    REDIS_CLIENT.expire('summary-' + senderId, 10);
+    REDIS_CLIENT.expire('moves-' + senderId, REDIS_TIME);
+    REDIS_CLIENT.expire('summary-' + senderId, REDIS_TIME);
 
     getMovementsRedis(senderId);
   });
@@ -53,7 +55,7 @@ getMovementsRedis = (senderId) => {
   new Promise((resolve, reject) => {
     REDIS_CLIENT.hgetall('summary-' + senderId, (error, reply) => {
       if(!reply && !error) {
-        let messageEvent = {message:{text: 'leer'}};
+        let messageEvent = {message:{text: 'movimientos'}};
         require('../handleEvents').messagePostbacks(senderId, messageEvent);
       } else {
         error ? reject(new Error(error)) : resolve(reply);
