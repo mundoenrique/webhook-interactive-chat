@@ -50,7 +50,7 @@ SetMovementsRedis = (senderId, responsePython) => {
 },
 //Obtiene los movimientos de REDIS
 getMovementsRedis = (senderId) => {
-  let total, min, max, plus, movements;
+  let total, min, max, s, movements;
   //Obtiene el resumen de los movimientos
   new Promise((resolve, reject) => {
     REDIS_CLIENT.hgetall('summary-' + senderId, (error, reply) => {
@@ -97,9 +97,9 @@ getMovementsRedis = (senderId) => {
 //Envía los movimientos al usuario
 sendCardMovements = (senderId, total, min, max, movements) => {
   let
-  plus = total > 1 ? 's' : '',
+  s = total > 1 ? 's' : '',
   elementsList = [{
-    title: total + ' Movimiento' + plus,
+    title: total + ' Movimiento' + s,
     subtitle: 'Mostrando ' + min + ' al ' + max
   }];
   HELP.action = 'movements';
@@ -131,9 +131,9 @@ sendCardMovements = (senderId, total, min, max, movements) => {
       let
       rest = total - max,
       n = rest > 1 ? 'n' : '';
-      plus = rest > 1 ? 's' : '';
+      s = rest > 1 ? 's' : '';
       messageData.message = {
-        text: `Resta${n} ${rest} movimiento${plus}`,
+        text: `Resta${n} ${rest} movimiento${s}`,
         quick_replies: [{
           content_type: 'text',
           title: 'Ver Más',
