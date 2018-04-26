@@ -94,6 +94,9 @@ handleResponsePython = (senderId, responsePython) => {
     } else if(responsePython.cardlist) {
       BAL.sendBalance(senderId, responsePython);
     } else if(responsePython.cardmovements) {
+      if(responsePython.cardmovements === '') {
+        responsePython.text = '';
+      }
       MOV.SetMovementsRedis(senderId, responsePython);
     } else {
       sendSimpleMessage(senderId, responsePython);
