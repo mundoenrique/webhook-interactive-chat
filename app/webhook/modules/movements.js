@@ -23,6 +23,17 @@ SetMovementsRedis = (senderId, responsePython) => {
   movements = [],
   cardMovements = HELP.objectTrasform(responsePython.cardmovements);
 
+  if(!cardMovements[0].amount) {
+    console.log(cardMovements);
+    messageData.recipient.id = senderId;
+    messageData.message = {
+      text: 'Lo siento, no encontre movimientos que mostrarte'
+    }
+
+    API.facebookRequest(HELP.action, HELP.method, HELP.uri, messageData)
+    .catch(error => console.log(error))
+    return
+  }
   //Construye el objeto para almacenar en REDIS
   cardMovements.forEach(movement => {
     let element = {};
