@@ -16,7 +16,8 @@ messagePostbacks = (senderId, messageEvent) => {
   //Verifica si el evento es un MESSAGE o un POSTBACK
   if(messageEvent.message) {
     if(messageEvent.message.attachments) {
-      message = messageEvent.message.attachments;
+      //message = messageEvent.message.attachments;
+      console.log('-----------------Mensaje con adjunto recibido-----------------')
     } else if(messageEvent.message.quick_reply) {
       message = messageEvent.message.quick_reply.payload;
     } else if (messageEvent.message.text) {
@@ -116,5 +117,6 @@ sendSimpleMessage = (senderId, responseApi) => {
 };
 
 module.exports = ({
-  messagePostbacks
+  messagePostbacks,
+  sendSimpleMessage
 });

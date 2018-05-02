@@ -95,7 +95,7 @@ getMovementsRedis = (senderId) => {
     //Borra los movimientos obtenidos
     return new Promise((resolve, reject) => {
       REDIS_CLIENT.ltrim('moves-' + senderId, 3, -1, (error, reply) => {
-        error ? reject(new Error(error)) : resolve(reply)
+        error ? reject(new Error(error)) : resolve(reply);
       });
     });
   })

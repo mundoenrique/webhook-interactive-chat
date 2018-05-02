@@ -68,7 +68,7 @@ pythonRequest = (senderId, dataUser, message) => {
   };
   return new Promise((resolve, reject) => {
     console.log('----%s REQUEST python senderId %s----', currentTime, senderId);
-    console.log(`facebook-data: ${dataUser.first_name} ${dataUser.last_name} ...`)
+    console.log(`facebook-data: ${dataUser.first_name} ${dataUser.last_name}...`)
     console.log(`text: ${body.text}`);
     console.log('------------------------------------------------------------------------');
     //envía solicitud al API de python
@@ -83,7 +83,7 @@ pythonRequest = (senderId, dataUser, message) => {
       statusMessage = error ? 'Error' : response.statusMessage;
       console.log('statusCode:', statusCode);
       console.log('statusMessage:', statusMessage);
-      if(!error) {
+      if(error) {
         console.log(error);
       } else {
         delete body.sender['_id'];
