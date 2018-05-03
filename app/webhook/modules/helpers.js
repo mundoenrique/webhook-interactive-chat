@@ -2,7 +2,7 @@
 const monment = require('moment');
 var
 //Hora actual
-currentTime = monment().format('YYYY-MM-DD HH:mm:ss'),
+currentTime = monment().format('YYYY-MM-DD HH:mm:ss.SSS'),
 //Acción a realizar
 action,
 //Método de envío de los mensajes al usuario

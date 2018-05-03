@@ -27,6 +27,9 @@ app.use(webhookRoutes);
 
 //Verifica que la solicitud proviene de facebook a través de la clave secreta de la aplicación
 function verifyRequestSignature(req, res, buf) {
+  console.log('');
+  console.log('');
+  console.log('');
   console.log('--------Verificando firma de la solicitud--------');
   let signature = req.headers["x-hub-signature"];
   let msg = 'La firma es VÁLIDA';
@@ -56,4 +59,3 @@ function verifyRequestSignature(req, res, buf) {
 }
 
 module.exports = app;
-
