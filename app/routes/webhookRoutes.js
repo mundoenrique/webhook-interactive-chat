@@ -1,9 +1,9 @@
 'use strict'
 const
-  //Dependencias
-  express = require('express'),
-  webhook = require('../webhook/webhook')
-;
+//Dependencias
+express = require('express'),
+MIDDLE = require('../middlewares/signature'),
+WEBHOOK = require('../webhook/webhook');
 //Usa las rutas de express
 var route = express.Router();
 
@@ -11,7 +11,7 @@ var route = express.Router();
 route.get('/', (req, res) => {
 	res.send('Servidor activo')
 });
-route.get('/webhook', webhook.verifyWebhook);
-route.post('/webhook', webhook.webhookMessaging);
+route.get('/webhook', WEBHOOK.verifyWebhook);
+route.post('/webhook', MIDDLE.verifySignature, WEBHOOK.webhookMessaging);
 
 module.exports = route;

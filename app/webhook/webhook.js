@@ -25,67 +25,75 @@ webhookMessaging = (req, res) => {
   let bodyReq = req.body;
   //Válida que sea una petición desde la página
   if (bodyReq.object == 'page') {
-    let
-    action = 'typingOn',
-    method = 'POST',
-    uri = 'me/messages';
-    // body = {
-    //   messaging_type: "RESPONSE",
-    //   recipient: {
-    //       id: senderId
-    //   },
-    //   sender_action: "typing_on"
-    // };
+    let event, pageId, senderId, timeEvent, messageEvent;
 
-    bodyReq.entry.forEach((bodyEntry) =>{
-      let
-      event = '',
-      pageId = bodyEntry.id,
+    bodyReq.entry.forEach((bodyEntry) => {
+      event = 'evento desconocido';
+      pageId = bodyEntry.id;
       timeEvent = bodyEntry.time;
 
-      bodyEntry.messaging.forEach((messageEvent) => {
-        let senderId = messageEvent.sender.id;
-        if(messageEvent.message) {
+      bodyEntry.messaging.forEach((messagingEvent) => {
+        senderId = messagingEvent.sender.id;
+        if(messagingEvent.message) {
           event = 'message';
+          messageEvent = messagingEvent.message;
 
-        } else if(messageEvent.postback) {
+        } else if(messagingEvent.postback) {
           event = 'postback';
+          messageEvent = messagingEvent.postback;
 
-        } else if(messageEvent.delivery) {
+        } else if(messagingEvent.delivery) {
           event = 'delivery';
+          messageEvent = messagingEvent.delivery;
 
-        } else if(messageEvent.optin) {
+        } else if(messagingEvent.optin) {
           event = 'optin';
+          messageEvent = messagingEvent.optin;
 
-        } else if(messageEvent.read) {
+        } else if(messagingEvent.read) {
           event = 'read';
+          messageEvent = messagingEvent.read;
 
-        } else if(messageEvent.account_linking) {
+        } else if(messagingEvent.account_linking) {
           event = 'account_linking';
-
-        }
-        //Devolver '200 (process ok)' a todos los eventos.
-        res.sendStatus(200);
-        console.log(`-----%s Evento webhook ${event} recibido: senderId %s-----`, currentTime, senderId);
-        console.log(messageEvent);
-        console.log('------------------------------------------------------------------------');
-        switch (event) {
-          case 'message':
-          case 'postback':
-            EVENTS.messagePostbacks(senderId, messageEvent);
-            break;
-          case 'delivery':
-          case 'optin':
-          case 'read':
-          case 'account_linking':
-            break;
-          default:
-            console.error('No fue posible identificar el evento webhook recibido')
+          messageEvent = messagingEvent.account_linking;
 
         }
       });
     });
-
+    console.log(`-----${currentTime} Evento webhook ${event} recibido: senderId ${senderId}-----`);
+    console.log(messageEvent);
+    console.log('------------------------------------------------------------------------');
+    let
+    action = 'typingOn',
+    method = 'POST',
+    uri = 'me/messages',
+    body = {
+      messaging_type: "RESPONSE",
+      recipient: {
+        id: senderId
+      },
+      sender_action: "typing_on"
+    };
+    API.facebookRequest(action, method, uri, body)
+    .then(() =>{
+      switch (event) {
+        case 'message':
+        case 'postback':
+          //EVENTS.messagePostbacks(senderId, messageEvent);
+          break;
+        case 'delivery':
+        case 'optin':
+        case 'read':
+        case 'account_linking':
+          break;
+        default:
+          console.error('No fue posible identificar el evento webhook recibido');
+      }
+    })
+    .catch(error => console.log(error))
+    //Devolver '200 (process ok)' a todos los eventos.
+    res.sendStatus(200);
   } else {
     //Devolver '404 (Not Found)' si el evento no es de una suscripción a la página
     res.sendStatus(404);

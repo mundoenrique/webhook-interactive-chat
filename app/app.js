@@ -29,23 +29,23 @@ app.use(webhookRoutes);
 function verifyRequestSignature(req, res, buf) {
   console.log('');
   console.log('');
-  console.log('');
   console.log('--------Verificando firma de la solicitud--------');
-  let signature = req.headers["x-hub-signature"];
-  let msg = 'La firma es VÁLIDA';
-  let valid = true;
+  let
+  signature = req.headers["x-hub-signature"],
+  msg = 'La firma es VÁLIDA',
+  valid = true;
 
   if (!signature) {
     msg = 'No existe la firma en la solictud.';
     valid = false;
 
   } else {
-    let elements = signature.split('=');
-    let method = elements[0];
-    let signatureHash = elements[1];
-
-    let expectedHash = crypto
-      .createHmac('sha1', MSN_APP_SECRET)
+    let
+    elements = signature.split('='),
+    method = elements[0],
+    signatureHash = elements[1],
+    expectedHash = crypto
+      .createHmac(method, MSN_APP_SECRET)
       .update(buf)
       .digest('hex');
 
@@ -54,8 +54,10 @@ function verifyRequestSignature(req, res, buf) {
       valid = false;
     }
   }
+  req.headers["signature-valid"] = valid
   console.log(msg);
   console.log('------------------------------------------------------------------------');
+
 }
 
 module.exports = app;

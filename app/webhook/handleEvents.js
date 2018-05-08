@@ -9,6 +9,7 @@ QUEST = require('./modules/questions'),
 BAL = require('./modules/balance'),
 MOV = require('./modules/movements');
 var
+//Pre armado del mensaje al usuario
 messageData = HELP.messageData,
 //Manejo de eventos para el API de python
 messagePostbacks = (senderId, messageEvent) => {
