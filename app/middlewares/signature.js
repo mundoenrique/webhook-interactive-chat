@@ -6,6 +6,8 @@ crypto = require('crypto'),
 //Clave secreta de la aplicación MESSENGER
 MSN_APP_SECRET = (process.env.MSN_APP_SECRET) ? process.env.MSN_APP_SECRET : config.get('msnAppSecret');
 
+csonsole.log(MSN_APP_SECRET);
+
 var
 verifySignature = (req, res, next) => {
   let
