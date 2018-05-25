@@ -19,6 +19,7 @@ verifySignature = (req, res, next) => {
     console.log('------------------------------------------------------------------------');
     return res.status(403).send({message: 'Forbidden access'});
   }
+  console.log('Mensaje');
   next();
 }
 
